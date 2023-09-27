@@ -1,0 +1,324 @@
+,permit_code,permit_desc
+0,1106,Single Family House
+1,4002,Vacant
+2,1104,Deck
+3,1301,Private Detached Garage
+4,3605,Food Kiosk
+5,1101,Basement Development
+6,3402,Office
+7,1102,Carport
+8,1401,Basement Development
+9,1106,Addition
+10,5401,Church
+11,2199,Indust/Manufacture Misc.
+12,3204,Warehouse/Office
+13,1101,Improvements (Single Family)
+14,1408,Do Not Use On This Job
+15,3106,Retail Shop
+16,3107,Shopping Centre
+17,3401,Bank
+18,3203,Warehouse
+19,3299,Storage/Warehouse Misc.
+20,2349,Indust/Transportation Misc.
+21,3608,Restaurant
+22,3109,Retail Food Store
+23,5202,Clinic
+24,3111,Warehouse Stores
+25,5116,Private School
+26,3303,Gas Bar
+27,1103,Solid Fuel Fireplace
+28,3399,Motor-Vehicle Misc.
+29,5115,University Of Calgary
+30,3703,Beauty Shop
+31,3610,Drinking Establishment
+32,3603,Cafe
+33,2379,Indust/Communication Misc.
+34,1106,House
+35,1404,Deck
+36,3304,Repair Garage
+37,1601,Ths Improvements
+38,3607,Hotel/Motel
+39,3611,Restaurant/Drinking Establishment
+40,5104,"College, Other"
+41,3799,Personal Service. Misc.
+42,3108,Liquor Store
+43,3507,Community Centre
+44,5106,Kindergarten
+45,1606,Ths Townhouse
+46,1401,Improvements (Two Family)
+47,3710,Massage
+48,1407,Two Family Semi-Detached (1 Unit)
+49,3301,Car Wash
+50,5117,Commercial School
+51,5103,"University, Mt Royal"
+52,3403,"Office, Medical"
+53,3508,Exhibition Building
+54,1107,Semi-Detached (1 Unit)
+55,2504,Greenhouse/Nursery
+56,1105,Retaining Wall
+57,5109,"School, Public"
+58,1401,Tfy Improvements
+59,2306,Parking Garage
+60,1506,Apt Apartment
+61,3504,Billiard Parlour
+62,2399,Indust/Utility Misc.
+63,3305,Service Station
+64,1508,Apt Fourplex
+65,2299,Engineer/Manufacture Misc.
+66,3199,Trade/Retail/Wholesale Misc.
+67,5111,"School, Separate"
+68,1501,Apt Improvements
+69,3105,Repair Shop
+70,3103,Kiosk
+71,1599,Apt Accessory Building
+72,1102,Conversion
+73,5299,Medical Misc.
+74,5112,"School, Sait"
+75,3499,Office/Bank/Professional Misc.
+76,1601,Basement Development
+77,5201,Hospital
+78,1604,Deck
+79,1408,Semi-Detached (2-Unit)
+80,1406,Two Family Duplex (Up/Down)
+81,3609,Restaurant - Take-Out (No Seats)
+82,1406,Duplex (Up/Down)
+83,2109,Clothing
+84,3510,Recreation Facility
+85,5101,"College, Bible"
+86,2119,Refinery-No Oil
+87,2203,Tower
+88,3506,Clubhouse
+89,2116,Photo Developing
+90,1505,Apt Retaining Wall
+91,3201,Bulk Storage
+92,3713,Tanning Salon
+93,2302,Auto Rental
+94,3702,Barber Shop
+95,2124,Laboratory
+96,2501,Animal Husbandry
+97,3612,Restaurant Prior June 1 98
+98,5303,Special Care Facility
+99,3102,Grocery Store
+100,1302,Carport
+101,5114,"School, Other"
+102,3599,Recreation Misc.
+103,3701,Art Studio
+104,3302,Dealership
+105,3513,Theatre
+106,1201,Private Swimming Pool
+107,1199, Accessory Building
+108,3502,Arena
+109,3899,Community Service Misc.
+110,1502,Apt Conversion
+111,5113,"School, Vocational"
+112,6101,Administration
+113,2301,Aircraft Hangar
+114,3205,Storage Hazardous Material
+115,3306,Paint Shop
+116,5199,Education Misc.
+117,3101,Department Store
+118,1403,Solid Fuel Fireplace
+119,2507,Veterinary Clinic
+120,5301,Child Care Facility
+121,1499,Tfy Accessory Building
+122,1406,Addition
+123,1408,Tfy Semi Detached (2 Unit)
+124,1306,Addition
+125,6104,National Defence
+126,2498,Engineer/Communication Misc.
+127,1103,Fireplace
+128,2382,Water Pumping Station
+129,6302,Court
+130,6202,Court
+131,1301,Detached Garage
+132,2123,Workshop
+133,3801,Service Clubs
+134,2102,Aircraft Prod
+135,1301,Basement Development
+136,2499,Engineer/Utility Misc.
+137,3505,Bowling Alley
+138,1101,Improvements-Hot Tub
+139,9999,Unspecified
+140,2308,Terminal-Air
+141,3511,Stadium
+142,1499,Accessory Building
+143,3712,Shoe Repair
+144,5105,Day-Care
+145,3509,Gaming Establishment
+146,3802,Fraternal Clubs
+147,1303,Solid Fuel Fireplace
+148,5302,Senior Citizen Homes
+149,2312,Travel Agency
+150,5107,Museum
+151,2114,Meat Packing Plant
+152,2408,Sewage Station
+153,1603,Solid Fuel Fireplace
+154,5203,Lab
+155,2125,Food Products
+156,3512,Swimming Pool
+157,2115,Machine Shop
+158,6307,Police
+159,5402,Rectory/Residence
+160,2104,Bakery
+161,3604,Cafeteria
+162,3601,Boarding House
+163,3501,Amusement Arcade
+164,3699,Restaurant/Hotel Misc.
+165,2202,Craneway
+166,1601,Improvements (Apartment)
+167,3711,Photo Studio
+168,6203,Prison
+169,6308,Transportation
+170,6102,Canada Post
+171,6199,Federal/Commercial Misc.
+172,3714,Dry Cleaning On Site
+173,1606,Townhouse
+174,6306,Parks
+175,3704,Cemetery
+176,3104,Pawnshop
+177,6399,Municipal/Commercial Misc.
+178,2117,Printing Plant
+179,2404,Radio/Tv Tower
+180,6398,Municipal/Residential Misc.
+181,3706,Dressmaker/Tailor
+182,2351,Radio Station
+183,3606,Hostel
+184,6305,Fire
+185,6204,Public Works
+186,2303,Bridge (+15)
+187,2105,Brewery/Distillery
+188,5499,Religious Misc.
+189,1407,Semi-Detached (1- Unit)
+190,1108,Pre-Fab House
+191,1109, Mobile Home
+192,2497,Engineer/Utility Misc.
+193,2127,Electronic Repair
+194,1501,Improvements (Townhouse)
+195,3602,Cabaret
+196,1405,Retaining Wall
+197,1605,Ths Retaining Wall
+198,1507,Apt Triplex
+199,1402,Carport
+200,2103,Auto Prod
+201,2505,Kennel
+202,2122,Soft Drink Plant
+203,2311,Terminal-Truck
+204,1407,Tfy Semi Detached (1 Unit)
+205,2112,Feed Grain Mill
+206,1606,Addition
+207,3805,Ywca/Ymca
+208,1405,Tfy Retaining Wall
+209,1505,Retaining Wall
+210,6105,Public Works
+211,2310,Terminal-Train
+212,1699,Ths Accessory Building
+213,2352,Telephone Exchange
+214,2354,Tv Studio-No Seats
+215,3708,Funeral Home
+216,1406,Tfy Duplex (Up / Down)
+217,1504,Deck
+218,1507,Triplex
+219,1503,Solid Fuel Fireplace
+220,6303,Electric System
+221,3707,Dry Cleaning Drop Off
+222,2126,Furniture Refinishing
+223,3503,Auditorium
+224,1604,Ths Deck
+225,2121,Sheet Metal
+226,1504,Apt Deck
+227,2403,Generating Plant
+228,5399,Welfare Misc.
+229,2599,Indust/Agriculture/Forestry Misc.
+230,2410,Transformer
+231,2106,Building Prod
+232,6103,Court
+233,1599,Accessory Building
+234,2120,Sawmill
+235,3715,Upholstery
+236,1501,Basement Development
+237,2309,Terminal-Bus
+238,6304,Engineering
+239,3709,Laundromat
+240,5102,"College, Business"
+241,1304,Deck
+242,1302,Private Carport
+243,1404,Tfy Deck
+244,1403,Fireplace
+245,2409,Electric Substation
+246,2381,Gas Regulating Station
+247,1506,Addition
+248,2113,Iron/Steel Mill
+249,1402,Conversion
+250,6299,Provincial/Commercial Misc.
+251,6301,Administration
+252,1403,Tfy Fireplace
+253,5522,Institutional
+254,1506,Apartment
+255,2108,Cement Prod
+256,3705,Crematorium
+257,2401,Filtration Plant
+258,3613,Restaurant - Licensed
+259,1503,Firepalce
+260,1101,Improvements Hot Tub
+261,6298,Provincial/Residential Misc.
+262,1508,Fourplex
+263,3614,Restaurant - Licensed And Drinking Establishment
+264,2411,Sewage Treatment
+265,2111,Fish Prod
+266,2128,Silk Screen Printing
+267,1699,Accessory Building
+268,2110,Dairy Prod
+269,1605,Retaining Wall
+270,2503,Hatchery
+271,5108,"School, Nursing"
+272,1603,Ths Fireplace
+273,1107,Semi-Detached (1 unit)
+274,7003,Public / Private Retaining Wall
+275,2407,Relay Station
+276,1201,Hot Tub
+277,1602,Conversion
+278,7102,Special Function Tent - Recreational
+279,1113,Detached Garage Dwelling Unit
+280,7101,Special Function Tent - Commercial
+281,1110,Below Grade Suite
+282,7103,Special Function - Class 1
+283,1111,Attached At Grade Suite
+284,3204,WAREHOUSE/OFFICE
+285,6201,Administration
+286,6106,Rcmp
+287,6498,Foreign/Residential Misc.
+288,2118,Publishing
+289,1101,Improvements (Swimming Pool)
+290,7002,Private Retaining Wall
+291,1502,Conversion
+292,7001,Public Retaining Wall
+293,6401,Administration
+294,1503,Apt Fireplace
+295,7104,Special Function - Class 2
+296,6499,Foreign/Commercial Misc.
+297,1602,Carport
+298,1112,Attached Above Grade Suite
+299,1115,Hot Tub
+300,1116,Repair After Fire
+301,6198,Federal/Residential Misc.
+302,1114,Detached Garden Suite
+303,3803,Tourist Association
+304,2506,Stockyard
+305,1706,Rhs Rowhouse
+306,1199,Accessory Residential Building
+307,1799,Rhs Accessory Building
+308,1101,Improvement
+309,1115,
+310,1704,Rhs Deck
+311,1112,Attached Above
+312,1702,Rhs Conversion
+313,1701,Rhs Improvements
+314,1199,Accessory Building
+315,1101,Improvements (Single Family)
+316,1705,Rhs Retaining Wall
+317,9999,
+318,1111,Attached At Grade
+319,2502,Experimental Farm
+320,1101,Improvements (Single Family)
+321,2307,Railway Shop
+322,3202,Grain Elevator
