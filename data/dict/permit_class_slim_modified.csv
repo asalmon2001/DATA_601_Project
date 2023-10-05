@@ -1,0 +1,265 @@
+,permit_code,permit_desc
+5,1101,Basement Development
+7,1102,Carport
+25,1103,Solid Fuel Fireplace
+2,1104,Deck
+52,1105,Retaining Wall
+0,1106,Single Family House
+50,1107,Semi-Detached (1 Unit)
+171,1108,Pre-Fab House
+172,1109, Mobile Home
+236,1110,Below Grade Suite
+238,1111,Attached At Grade Suite
+248,1112,Attached Above Grade Suite
+234,1113,Detached Garage Dwelling Unit
+252,1114,Detached Garden Suite
+249,1115,Hot Tub
+250,1116,Repair After Fire
+98,1199, Accessory Building
+97,1201,Private Swimming Pool
+3,1301,Private Detached Garage
+91,1302,Carport
+131,1303,Solid Fuel Fireplace
+211,1304,Deck
+113,1306,Addition
+8,1401,Basement Development
+179,1402,Carport
+109,1403,Solid Fuel Fireplace
+32,1404,Deck
+176,1405,Retaining Wall
+72,1406,Two Family Duplex (Up/Down)
+44,1407,Two Family Semi-Detached (1 Unit)
+12,1408,Do Not Use On This Job
+112,1499,Tfy Accessory Building
+63,1501,Apt Improvements
+101,1502,Apt Conversion
+193,1503,Solid Fuel Fireplace
+192,1504,Deck
+81,1505,Apt Retaining Wall
+55,1506,Apt Apartment
+178,1507,Apt Triplex
+59,1508,Apt Fourplex
+66,1599,Apt Accessory Building
+34,1601,Ths Improvements
+232,1602,Conversion
+137,1603,Solid Fuel Fireplace
+71,1604,Deck
+177,1605,Ths Retaining Wall
+42,1606,Ths Townhouse
+188,1699,Ths Accessory Building
+259,1701,Rhs Improvements
+258,1702,Rhs Conversion
+257,1704,Rhs Deck
+260,1705,Rhs Retaining Wall
+255,1706,Rhs Rowhouse
+256,1799,Rhs Accessory Building
+121,2102,Aircraft Prod
+180,2103,Auto Prod
+144,2104,Bakery
+169,2105,Brewery/Distillery
+203,2106,Building Prod
+218,2108,Cement Prod
+74,2109,Clothing
+227,2110,Dairy Prod
+225,2111,Fish Prod
+184,2112,Feed Grain Mill
+214,2113,Iron/Steel Mill
+135,2114,Meat Packing Plant
+141,2115,Machine Shop
+80,2116,Photo Developing
+160,2117,Printing Plant
+242,2118,Publishing
+77,2119,Refinery-No Oil
+205,2120,Sawmill
+198,2121,Sheet Metal
+182,2122,Soft Drink Plant
+119,2123,Workshop
+86,2124,Laboratory
+139,2125,Food Products
+196,2126,Furniture Refinishing
+174,2127,Electronic Repair
+226,2128,Silk Screen Printing
+10,2199,Indust/Manufacture Misc.
+149,2202,Craneway
+78,2203,Tower
+60,2299,Engineer/Manufacture Misc.
+104,2301,Aircraft Hangar
+84,2302,Auto Rental
+168,2303,Bridge (+15)
+54,2306,Parking Garage
+262,2307,Railway Shop
+125,2308,Terminal-Air
+207,2309,Terminal-Bus
+187,2310,Terminal-Train
+183,2311,Terminal-Truck
+133,2312,Travel Agency
+18,2349,Indust/Transportation Misc.
+164,2351,Radio Station
+189,2352,Telephone Exchange
+190,2354,Tv Studio-No Seats
+31,2379,Indust/Communication Misc.
+213,2381,Gas Regulating Station
+116,2382,Water Pumping Station
+57,2399,Indust/Utility Misc.
+220,2401,Filtration Plant
+199,2403,Generating Plant
+161,2404,Radio/Tv Tower
+231,2407,Relay Station
+136,2408,Sewage Station
+212,2409,Electric Substation
+202,2410,Transformer
+224,2411,Sewage Treatment
+173,2497,Engineer/Utility Misc.
+115,2498,Engineer/Communication Misc.
+122,2499,Engineer/Utility Misc.
+87,2501,Animal Husbandry
+261,2502,Experimental Farm
+228,2503,Hatchery
+51,2504,Greenhouse/Nursery
+181,2505,Kennel
+254,2506,Stockyard
+110,2507,Veterinary Clinic
+201,2599,Indust/Agriculture/Forestry Misc.
+108,3101,Department Store
+90,3102,Grocery Store
+65,3103,Kiosk
+158,3104,Pawnshop
+64,3105,Repair Shop
+13,3106,Retail Shop
+14,3107,Shopping Centre
+39,3108,Liquor Store
+20,3109,Retail Food Store
+22,3111,Warehouse Stores
+61,3199,Trade/Retail/Wholesale Misc.
+82,3201,Bulk Storage
+263,3202,Grain Elevator
+16,3203,Warehouse
+11,3204,Warehouse/Office
+105,3205,Storage Hazardous Material
+17,3299,Storage/Warehouse Misc.
+45,3301,Car Wash
+95,3302,Dealership
+24,3303,Gas Bar
+33,3304,Repair Garage
+58,3305,Service Station
+106,3306,Paint Shop
+26,3399,Motor-Vehicle Misc.
+15,3401,Bank
+6,3402,Office
+48,3403,"Office, Medical"
+69,3499,Office/Bank/Professional Misc.
+147,3501,Amusement Arcade
+99,3502,Arena
+197,3503,Auditorium
+56,3504,Billiard Parlour
+123,3505,Bowling Alley
+79,3506,Clubhouse
+40,3507,Community Centre
+49,3508,Exhibition Building
+129,3509,Gaming Establishment
+75,3510,Recreation Facility
+126,3511,Stadium
+140,3512,Swimming Pool
+96,3513,Theatre
+93,3599,Recreation Misc.
+146,3601,Boarding House
+175,3602,Cabaret
+30,3603,Cafe
+145,3604,Cafeteria
+4,3605,Food Kiosk
+165,3606,Hostel
+35,3607,Hotel/Motel
+19,3608,Restaurant
+73,3609,Restaurant - Take-Out (No Seats)
+29,3610,Drinking Establishment
+36,3611,Restaurant/Drinking Establishment
+88,3612,Restaurant Prior June 1 98
+221,3613,Restaurant - Licensed
+223,3614,Restaurant - Licensed And Drinking Establishment
+148,3699,Restaurant/Hotel Misc.
+94,3701,Art Studio
+85,3702,Barber Shop
+28,3703,Beauty Shop
+157,3704,Cemetery
+219,3705,Crematorium
+163,3706,Dressmaker/Tailor
+195,3707,Dry Cleaning Drop Off
+191,3708,Funeral Home
+209,3709,Laundromat
+43,3710,Massage
+150,3711,Photo Studio
+127,3712,Shoe Repair
+83,3713,Tanning Salon
+155,3714,Dry Cleaning On Site
+206,3715,Upholstery
+38,3799,Personal Service. Misc.
+120,3801,Service Clubs
+130,3802,Fraternal Clubs
+253,3803,Tourist Association
+185,3805,Ywca/Ymca
+100,3899,Community Service Misc.
+1,4002,Vacant
+76,5101,"College, Bible"
+210,5102,"College, Business"
+47,5103,"University, Mt Royal"
+37,5104,"College, Other"
+128,5105,Day-Care
+41,5106,Kindergarten
+134,5107,Museum
+229,5108,"School, Nursing"
+53,5109,"School, Public"
+62,5111,"School, Separate"
+68,5112,"School, Sait"
+102,5113,"School, Vocational"
+92,5114,"School, Other"
+27,5115,University Of Calgary
+23,5116,Private School
+46,5117,Commercial School
+107,5199,Education Misc.
+70,5201,Hospital
+21,5202,Clinic
+138,5203,Lab
+67,5299,Medical Misc.
+111,5301,Child Care Facility
+132,5302,Senior Citizen Homes
+89,5303,Special Care Facility
+200,5399,Welfare Misc.
+9,5401,Church
+143,5402,Rectory/Residence
+170,5499,Religious Misc.
+217,5522,Institutional
+103,6101,Administration
+153,6102,Canada Post
+204,6103,Court
+114,6104,National Defence
+186,6105,Public Works
+240,6106,Rcmp
+251,6198,Federal/Residential Misc.
+154,6199,Federal/Commercial Misc.
+239,6201,Administration
+118,6202,Court
+151,6203,Prison
+167,6204,Public Works
+222,6298,Provincial/Residential Misc.
+215,6299,Provincial/Commercial Misc.
+216,6301,Administration
+117,6302,Court
+194,6303,Electric System
+208,6304,Engineering
+166,6305,Fire
+156,6306,Parks
+142,6307,Police
+152,6308,Transportation
+162,6398,Municipal/Residential Misc.
+159,6399,Municipal/Commercial Misc.
+245,6401,Administration
+241,6498,Foreign/Residential Misc.
+247,6499,Foreign/Commercial Misc.
+244,7001,Public Retaining Wall
+243,7002,Private Retaining Wall
+230,7003,Public / Private Retaining Wall
+235,7101,Special Function Tent - Commercial
+233,7102,Special Function Tent - Recreational
+237,7103,Special Function - Class 1
+246,7104,Special Function - Class 2
+124,9999,Unspecified
