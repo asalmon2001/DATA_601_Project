@@ -16,3 +16,7 @@ https://data.calgary.ca/Business-and-Economic-Activity/Building-Permits/c2es-76e
 My initial plan: filter all permits by permit class. However, I encounted a problem where some permit classes include both new buildings and improvements.
 New plan: first, I will grab all the demolision permits and throw those in a .csv. Next, I will grab all the improvements and throw those in a .csv. This will all be done with the WorkClassGroup column. With the remaining "New" WorkClassGroup, we will filter for "residential" and "non-residential". Then we will see what we are working with.
 I am also going to pre-emptively filter by half-decades
+
+23/10/06
+Since each dataset for demolition, improvements, etc could all fit into memory, I am going to re-export but this time not pre-emptively filter by half-decades.
+I think this will give better histograms that I can tune more finely.
