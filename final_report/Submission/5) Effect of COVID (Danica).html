@@ -1,0 +1,1417 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    
+    
+    
+    
+
+
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Guiding Question 5 (Danica): How did COVID Affect Building Permit Types and Work Class Groups in Calgary?<a rel="noopener" class="anchor-link" href="#Guiding-Question-5-(Danica):-How-did-COVID-Affect-Building-Permit-Types-and-Work-Class-Groups-in-Calgary?">&#182;</a></h1><h2>Domain<a rel="noopener" class="anchor-link" href="#Domain">&#182;</a></h2><p>COVID impacted the world both socially and economically. Industry halted, employees were furloughed, and remote working became the norm. This question will delve into the effects on building permit types. Was there an increase in residential permits or non-residential permits? Were the work class types different? Demolition, residential improvement or new start? This project will investigate the unique effects of a COVID related world shut down on the microcosm of construction in Calgary.</p>
+<h2>Data Set<a rel="noopener" class="anchor-link" href="#Data-Set">&#182;</a></h2><p>The data used in the exploration of this guiding question was categorical data exported from the Building Permits from Open Calgary, of which the terms of use indicate that the data is  in a CSV format (The City of Calgary, 2023). The data was exported four times. The data was filtered for the years 2019, 2020, and 2021 individually and then for the years 2019-2021 collectively. This was done to ensure that there were no errors when doing the visualizations and the values could be cross-referenced with the year specific data. Once the data was exported to CSV it was read into Jupyter using as a Pandas data frame. Then the data was checked for null values, of which there were none. Once the data was cleaned, there were differing next steps for the data crossing all years versus the data that was focused on one year.</p>
+<p>One of the challenges with the creation of visualizations was determining which column contained the best data for the analysis. There were several columns with similar categorical data inputs and we needed to determine which would be the simplest for all audience members. Work Class Grouped, broken up into 4 categories:</p>
+<ul>
+<li>Improvement: an addition or change to existing structures</li>
+<li>New: a new structure that is separate from existing structures</li>
+<li>Demolition: destruction or removal of a structure</li>
+<li>Unspecified: does not fall into the other categories (ie - fire alarm installs)</li>
+</ul>
+<p>The other column that was selected for this analysis was the Permit Class Mapped, which is broken up into 3 categories:</p>
+<ul>
+<li>Residential: for living or housing purposes</li>
+<li>Non-residential: for commercial use</li>
+<li>Unspecified: what does not fit into the other categories</li>
+</ul>
+<p>This column was selected over other columns with similar information due to the simplicity of categorization (using mostly commonly used terms) and the ability to visualize the data.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">datetime</span> 
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Data by Year<a rel="noopener" class="anchor-link" href="#Data-by-Year">&#182;</a></h1><h2>Purpose<a rel="noopener" class="anchor-link" href="#Purpose">&#182;</a></h2><p>The following section breaks the data up into their respective years (pre-covid, covid, and post-covid) for 2019,2020 and 2021. The purpose of this section is to delve into each year in terms of Work Class Groups and Permit Types and make inferences individually before looking at the trends across the years.</p>
+<h2>The Process<a rel="noopener" class="anchor-link" href="#The-Process">&#182;</a></h2><p>The data was filtered for AppliedDate, PermitClassMapped, WorkClass, WorkClassGroup, and PermitType. This keeps the columns we want and gets rid of the excess 25 columns. Then we checked for null or NaN values and grouped by Work Class Group and Applied Date for the frequency by group of permit visualization and filtered by Permit Class Type and Applied Date for the frequency by type visualization. Once the data was grouped and the values were counted by category. We used Matplotlib to create the bar chart for each year and each variable (WorkClassGroup and PermitClassMapped). To ensure the data as callable and the visualizations could be effectively plotted, we had to add .reset_index() while grouping so we could call columns by index. To ensure the visualizations were accurate, we displayed the dataframe after it was grouped and compared it to the bar graph values.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Visualizations for 2019 (Pre-COVID)<a rel="noopener" class="anchor-link" href="#Visualizations-for-2019-(Pre-COVID)">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#2019 permits</span>
+<span class="n">permits_2019</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;Building_Permits_2019.csv&quot;</span><span class="p">)</span>
+<span class="n">precovid_permits</span> <span class="o">=</span> <span class="n">permits_2019</span><span class="o">.</span><span class="n">filter</span><span class="p">([</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">,</span><span class="s2">&quot;PermitClassMapped&quot;</span><span class="p">,</span> <span class="s2">&quot;WorkClass&quot;</span><span class="p">,</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">,</span> <span class="s2">&quot;PermitType&quot;</span><span class="p">])</span>
+<span class="n">precovid_permits</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#counts all the missing or omitted values (chartio, 2021) </span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">grouped_2019</span> <span class="o">=</span> <span class="n">precovid_permits</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">])[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">grouped_2019</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">grouped_2019</span><span class="p">[</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">],</span> <span class="n">grouped_2019</span><span class="p">[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;maroon&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Permit frequency by Work Class Group in 2019&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Work Class Group&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of Permits&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>WorkClassGroup</th>
+      <th>AppliedDate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Demolition</td>
+      <td>548</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Improvement</td>
+      <td>9456</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>New</td>
+      <td>6885</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Unspecified</td>
+      <td>484</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">precovid_permits</span><span class="o">.</span><span class="n">PermitClassMapped</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">b1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;PermitClassMapped&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;Permit Class Mapped&#39;</span><span class="p">,</span> <span class="s1">&#39;PermitClassMapped&#39;</span><span class="p">:</span> <span class="s1">&#39;Count&#39;</span><span class="p">})</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">marker_color</span><span class="o">=</span><span class="s1">&#39;maroon&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set the title and axis labels</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Permit Class Mapped Counts 2019&#39;</span><span class="p">,</span>
+    <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Permit Class Mapped&#39;</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">&#39;Count&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Show the plot</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PermitClassMapped</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Residential</th>
+      <td>13621</td>
+    </tr>
+    <tr>
+      <th>Non-Residential</th>
+      <td>3632</td>
+    </tr>
+    <tr>
+      <th>Unspecified</th>
+      <td>120</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+        
+        
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Visualizations for 2020 (COVID)<a rel="noopener" class="anchor-link" href="#Visualizations-for-2020-(COVID)">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#during the onset of covid</span>
+<span class="n">permits_2020</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;Building_Permits_2020.csv&quot;</span><span class="p">,</span> <span class="n">low_memory</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">covid_permits</span> <span class="o">=</span> <span class="n">permits_2020</span><span class="o">.</span><span class="n">filter</span><span class="p">([</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">,</span><span class="s2">&quot;PermitClassMapped&quot;</span><span class="p">,</span> <span class="s2">&quot;WorkClass&quot;</span><span class="p">,</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">,</span> <span class="s2">&quot;PermitType&quot;</span><span class="p">])</span>
+<span class="n">covid_permits</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#counts all the missing or omitted values (chartio, 2021) </span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">grouped_2020</span> <span class="o">=</span> <span class="n">covid_permits</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">])[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">grouped_2020</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">grouped_2020</span><span class="p">[</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">],</span> <span class="n">grouped_2020</span><span class="p">[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;pink&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Permit frequency by Work Class Group in 2020&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Work Class Group&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of Permits&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>WorkClassGroup</th>
+      <th>AppliedDate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Demolition</td>
+      <td>468</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Improvement</td>
+      <td>11295</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>New</td>
+      <td>6783</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Unspecified</td>
+      <td>362</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">covid_permits</span><span class="o">.</span><span class="n">PermitClassMapped</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">d1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;PermitClassMapped&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;Permit Class Mapped&#39;</span><span class="p">,</span> <span class="s1">&#39;PermitClassMapped&#39;</span><span class="p">:</span> <span class="s1">&#39;Count&#39;</span><span class="p">})</span>
+
+<span class="c1"># Customize the appearance of the bar graph (using pink to aline with the WorkClassGroup maps</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">marker_color</span><span class="o">=</span><span class="s1">&#39;pink&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set the title and axis labels</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Permit Class Mapped Counts 2020&#39;</span><span class="p">,</span>
+    <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Permit Class Mapped&#39;</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">&#39;Count&#39;</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1">#shows that residential permit class is the most frequent permit class applied for</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PermitClassMapped</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Residential</th>
+      <td>15988</td>
+    </tr>
+    <tr>
+      <th>Non-Residential</th>
+      <td>2692</td>
+    </tr>
+    <tr>
+      <th>Unspecified</th>
+      <td>228</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Visualizations for 2021 (Post-COVID)<a rel="noopener" class="anchor-link" href="#Visualizations-for-2021-(Post-COVID)">&#182;</a></h1>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">permits_2021</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;Building_Permits_2021.csv&quot;</span><span class="p">,</span> <span class="n">low_memory</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">post_covid_permits</span> <span class="o">=</span> <span class="n">permits_2021</span><span class="o">.</span><span class="n">filter</span><span class="p">([</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">,</span><span class="s2">&quot;PermitClassMapped&quot;</span><span class="p">,</span> <span class="s2">&quot;WorkClass&quot;</span><span class="p">,</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">,</span> <span class="s2">&quot;PermitType&quot;</span><span class="p">])</span>
+<span class="n">post_covid_permits</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#counts all the missing or omitted values (chartio, 2021) </span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[10]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">grouped_2021</span> <span class="o">=</span> <span class="n">post_covid_permits</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">])[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">grouped_2021</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">grouped_2021</span><span class="p">[</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">],</span> <span class="n">grouped_2021</span><span class="p">[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;purple&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Permit frequency by Work Class Group in 2021&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Work Class Group&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of Permits&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>WorkClassGroup</th>
+      <th>AppliedDate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Demolition</td>
+      <td>653</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Improvement</td>
+      <td>11491</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>New</td>
+      <td>9162</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Unspecified</td>
+      <td>532</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">post_covid_permits</span><span class="o">.</span><span class="n">PermitClassMapped</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">d1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;PermitClassMapped&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;Permit Class Mapped&#39;</span><span class="p">,</span> <span class="s1">&#39;PermitClassMapped&#39;</span><span class="p">:</span> <span class="s1">&#39;Count&#39;</span><span class="p">})</span>
+
+<span class="c1"># Customize the appearance of the bar graph</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">marker_color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set the title and axis labels</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Permit Class Mapped Counts 2021&#39;</span><span class="p">,</span>
+    <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Permit Class Mapped&#39;</span><span class="p">,</span>
+    <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">&#39;Count&#39;</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1">#shows that residential permit class is the most frequent permit class applied for in 2021</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PermitClassMapped</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Residential</th>
+      <td>18261</td>
+    </tr>
+    <tr>
+      <th>Non-Residential</th>
+      <td>3327</td>
+    </tr>
+    <tr>
+      <th>Unspecified</th>
+      <td>250</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Key Takeaways from the year specific Visualizations<a rel="noopener" class="anchor-link" href="#Key-Takeaways-from-the-year-specific-Visualizations">&#182;</a></h2><p>Each of the Permit Type visualizations showed that the &quot;Improvement&quot; work class had the highest volume of permits followed by &quot;New&quot;, and that Residential permits were the most common permit type. The next step will show the trends over the years and determine if there was a noticeable change in the ratios between Residential permit types and Improvement work permit class, or if the ratios remained fairly constant across the years. It is difficult to make substantial conclusions from the individual year aside from direct comparison of Permit Type of Work Class Group. The proportions year by year remain the similar and there is more value to this question to bring them together across the time period, as done in the next part.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Trends Across All Years<a rel="noopener" class="anchor-link" href="#Trends-Across-All-Years">&#182;</a></h1><h2>Purpose<a rel="noopener" class="anchor-link" href="#Purpose">&#182;</a></h2><p>Two visualizations were created to display the trends across COVID. A Sunburst diagram that encompasses all the data to summarize the findings and then a bar plot to better show the specific Work Class Group trends across COVID.</p>
+<h2>The Process<a rel="noopener" class="anchor-link" href="#The-Process">&#182;</a></h2><p>The following visualizations were created by reading in the csv file for the years 2019-2021 in a Pandas data frame then filtering for AppliedDate, PermitClassMapped, WorkClass, WorkClassGroup, and PermitType. This keeps the columns we want and gets rid of the excess 25 columns. Then the data was checked for null or NaN values. Before creating the actual visualization a new column had to be added that converted the Applied Date datetime and then the year was extracted and added to a second new column. This allowed the data to be grouped by year.</p>
+<p>To create the summary bar chart, the data was grouped by work class group and then again by applied date (to get the 3 columns). The x values were created by creating a Numpy array from 0 to length of Work Class Groups (less 1). This creates an index that can be used to call Work Class Groups. The bars were then plotted specifying the location on the x-axis using the x +/- width argument. This ensures the bar plots are not plotted on in the same place and are visible. Labels for the title, and the x/y-axis were added and the x-ticks were specified to be angled to ensure legibility.</p>
+<p>The Sunburst plot was created using Plotly express. Prior to plotting, the value counts of each work class group was taken to help predict the overall frequency. Then the data was grouped by Year, PermitClassMapped, WorkClassGroup and the values were set by the applied date. This allowed the data to be displayed by year. Finally .reset_index() was included to ensure the columns were callable by name.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[13]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#all permits over 2019-2021</span>
+<span class="n">building_permits</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;Building_Permits.csv&quot;</span><span class="p">)</span>
+<span class="n">covid_permits_total</span> <span class="o">=</span> <span class="n">building_permits</span><span class="o">.</span><span class="n">filter</span><span class="p">([</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">,</span><span class="s2">&quot;PermitClassMapped&quot;</span><span class="p">,</span> <span class="s2">&quot;WorkClass&quot;</span><span class="p">,</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">,</span> <span class="s2">&quot;PermitType&quot;</span><span class="p">])</span>
+<span class="n">covid_permits_total</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="c1">#counts all the missing or omitted values (chartio, 2021) </span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">covid_permits_total</span><span class="p">[</span><span class="s2">&quot;Date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">covid_permits_total</span><span class="p">[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+<span class="n">display</span><span class="p">(</span><span class="n">covid_permits_total</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="c1">#convert to datetime</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>AppliedDate</th>
+      <th>PermitClassMapped</th>
+      <th>WorkClass</th>
+      <th>WorkClassGroup</th>
+      <th>PermitType</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2019/01/02</td>
+      <td>Residential</td>
+      <td>New</td>
+      <td>New</td>
+      <td>Residential Improvement Project</td>
+      <td>2019-01-02</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2019/01/02</td>
+      <td>Residential</td>
+      <td>Alteration</td>
+      <td>Improvement</td>
+      <td>Residential Improvement Project</td>
+      <td>2019-01-02</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">covid_permits_total</span><span class="p">[</span><span class="s2">&quot;Year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DatetimeIndex</span><span class="p">(</span><span class="n">covid_permits_total</span><span class="p">[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">year</span>
+<span class="n">display</span><span class="p">(</span><span class="n">covid_permits_total</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="c1">#extracts year from datetime </span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>AppliedDate</th>
+      <th>PermitClassMapped</th>
+      <th>WorkClass</th>
+      <th>WorkClassGroup</th>
+      <th>PermitType</th>
+      <th>Date</th>
+      <th>Year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2019/01/02</td>
+      <td>Residential</td>
+      <td>New</td>
+      <td>New</td>
+      <td>Residential Improvement Project</td>
+      <td>2019-01-02</td>
+      <td>2019</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2019/01/02</td>
+      <td>Residential</td>
+      <td>Alteration</td>
+      <td>Improvement</td>
+      <td>Residential Improvement Project</td>
+      <td>2019-01-02</td>
+      <td>2019</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Combine the data for 2019, 2020, and 2021</span>
+
+<span class="c1">#get the y-values</span>
+<span class="n">workclass_groups</span> <span class="o">=</span> <span class="n">grouped_2019</span><span class="p">[</span><span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">]</span>
+<span class="n">data_2019</span> <span class="o">=</span> <span class="n">grouped_2019</span><span class="p">[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">]</span> 
+<span class="n">data_2020</span> <span class="o">=</span> <span class="n">grouped_2020</span><span class="p">[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">]</span>
+<span class="n">data_2021</span> <span class="o">=</span> <span class="n">grouped_2021</span><span class="p">[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">]</span>
+
+<span class="c1"># Combine data for each year</span>
+<span class="n">width</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">workclass_groups</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">width</span><span class="p">,</span> <span class="n">data_2019</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;maroon&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;2019&quot;</span><span class="p">)</span> <span class="c1">#x-width indicates where the lines are plotted on the x-axis</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">data_2020</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;pink&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;2020&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="p">,</span> <span class="n">data_2021</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;2021&quot;</span><span class="p">)</span>
+
+<span class="c1">#labels</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Permit frequency by Work Class Group in 2019-2021&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Work Class Group&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of Permits&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set x-axis tick labels</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">workclass_groups</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span> <span class="c1">#makes the xtick labels go diagonal (easier to read on graph)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1">#The numpy library is used to manage the positions of the bars. Tried previously without, but the bars were plotted on top of each other </span>
+<span class="c1">#Adjust the width and other parameters as needed to achieve the desired appearance of the plot.</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">covid_permits_total</span><span class="o">.</span><span class="n">WorkClassGroup</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">b</span>
+<span class="c1">#used to look at the overall counts before grouping </span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>Improvement    32233
+New            22830
+Demolition      1669
+Unspecified     1378
+Name: WorkClassGroup, dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[18]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">permits_grouped</span> <span class="o">=</span> <span class="n">covid_permits_total</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;Year&quot;</span><span class="p">,</span> <span class="s2">&quot;PermitClassMapped&quot;</span><span class="p">,</span> <span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">])[</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">permits_grouped</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="c1">#might have to make year and permit class mapped an index only</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Year</th>
+      <th>PermitClassMapped</th>
+      <th>WorkClassGroup</th>
+      <th>AppliedDate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2019</td>
+      <td>Non-Residential</td>
+      <td>Demolition</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2019</td>
+      <td>Non-Residential</td>
+      <td>Improvement</td>
+      <td>2891</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2019</td>
+      <td>Non-Residential</td>
+      <td>New</td>
+      <td>287</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2019</td>
+      <td>Non-Residential</td>
+      <td>Unspecified</td>
+      <td>429</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[19]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Filter the data for each year</span>
+<span class="n">data_2019</span> <span class="o">=</span> <span class="n">permits_grouped</span><span class="p">[</span><span class="n">permits_grouped</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2019</span><span class="p">]</span>
+<span class="n">data_2020</span> <span class="o">=</span> <span class="n">permits_grouped</span><span class="p">[</span><span class="n">permits_grouped</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2020</span><span class="p">]</span>
+<span class="n">data_2021</span> <span class="o">=</span> <span class="n">permits_grouped</span><span class="p">[</span><span class="n">permits_grouped</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2021</span><span class="p">]</span>
+
+<span class="c1"># Combine the data for all years</span>
+<span class="n">combined_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data_2019</span><span class="p">,</span> <span class="n">data_2020</span><span class="p">,</span> <span class="n">data_2021</span><span class="p">])</span>
+
+<span class="c1"># Create a grouped bar chart with separate bars for each year</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">combined_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;PermitClassMapped&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;AppliedDate&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Year&quot;</span><span class="p">,</span>
+             <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;PermitClassMapped for 2019-2021&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#sunburst chart in plotly for big picture and then dives in to each portion</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">sunburst</span><span class="p">(</span><span class="n">permits_grouped</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;PermitClassMapped&quot;</span><span class="p">,</span><span class="s2">&quot;Year&quot;</span><span class="p">,</span> <span class="s2">&quot;WorkClassGroup&quot;</span><span class="p">],</span> <span class="n">values</span> <span class="o">=</span> <span class="s2">&quot;AppliedDate&quot;</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">800</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1">#https://plotly.com/python/sunburst-charts/</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:800px;width:800px;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Key Takeaways and Conclusion<a rel="noopener" class="anchor-link" href="#Key-Takeaways-and-Conclusion">&#182;</a></h2><p>Plot: &quot;Permit frequency by Work Class Group in 2019-2021&quot;</p>
+<ul>
+<li>shows the trends of Work Class permits across 2019-2021. The &quot;Demolition&quot; and &quot;Unspecified&quot; work class group remains fairly unchanged across the years thus it can be surmised that those groups remain unaffected by the lockdowns,during COVID, and the economic turn around, post COVID.</li>
+<li>While the &quot;Improvement&quot; class remained the highest followed by the &quot;New&quot; class across the years, there was a noticeable increase in &quot;Improvements&#39; &#39; in 2020 and 2021. Upon research, the improvements could be attributed to the increase of home improvement projects that were initiated through lockdowns and carried on into 2021. This is supported by the data collected by Architectural Digest that discusses theincrease in home improvement spending in 2020 and 2021 (Architectural Digest, 2023).</li>
+<li>The last takeaway from this graph is that there was a large increase in the &quot;New&quot; class in the year 2021. This may be attributed to pent up demand and limitations due to lockdowns in 2019 that may have caused the large increase in permits (T.C. Press, 2023).</li>
+</ul>
+<p>Plot: &quot;PermitClassMapped for 2019-2021&quot;</p>
+<ul>
+<li>This plot shows fairly steady proportions of permit types across the years with residential remaining the largest proportion. The changes from 2019-2021 are not well visualized in this graph without hovering over the plot to get the number of permits. This plot is useful for a quick understanding of proportion, but less so when looking at trend changes.</li>
+</ul>
+<p>Plot: Sunburst Diagram</p>
+<ul>
+<li>This plot encompasses all the data and gives an interactive overview of the data. The impact of COVID on workclass groups paired with permit types can be seen aided by the interactivity of the diagram. This diagram better illustrates the change of permit type across the years. The size of the second ring gives a simpler indication of the change in Residential and Non-Residential building permits specifically between 2019 and 2020.</li>
+</ul>
+<h2>Conclusion<a rel="noopener" class="anchor-link" href="#Conclusion">&#182;</a></h2><p>COVDE did impact Work Class Groups and Building Permit types. The overall ranking of most frequent in either category did not change between 2019 and 2021 but the movement within the Work Class Groups was significant. &quot;Improvement&quot; permits increased as people in Calgary were locked down in their homes and looking for activities to fill their time and when COVID began to slow down in 2021, permits for the &quot;New&quot; work class drastically increased as people were starting to work again and construction tried to keep up with the pent up demand from 2020.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>References<a rel="noopener" class="anchor-link" href="#References">&#182;</a></h2><p>Home renovation facts and statistics(2023). (2023). Architectural Digest. Retrieved October 16, 2023, from <a rel="noopener" href="https://www.architecturaldigest.com/reviews/home-improvement/home-renovation-facts-statistics">https://www.architecturaldigest.com/reviews/home-improvement/home-renovation-facts-statistics</a></p>
+<p>How to check if any value is nan in a pandas dataframe. (2023). Chartio. Retrieved October 15, 2023, from <a rel="noopener" href="https://chartio.com/resources/tutorials/how-to-check-if-any-value-is-nan-in-a-pandas-dataframe/">https://chartio.com/resources/tutorials/how-to-check-if-any-value-is-nan-in-a-pandas-dataframe/</a></p>
+<p>Matplotlib. Pyplot. Bar—Matplotlib 3. 8. 0 documentation. (2023). Retrieved October 16, 2023, from <a rel="noopener" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.bar.html">https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.bar.html</a></p>
+<p>Press, T. C. (2022, January 4). Calgary housing market ends 2021 with record sales—BNN Bloomberg. BNN. <a rel="noopener" href="https://www.bnnbloomberg.ca/calgary-home-sales-up-45-in-december-year-ends-with-record-sales-real-estate-board-1.1703016">https://www.bnnbloomberg.ca/calgary-home-sales-up-45-in-december-year-ends-with-record-sales-real-estate-board-1.1703016</a></p>
+<p>Sunburst.(2023). Retrieved October 15, 2023, from <a rel="noopener" href="https://plotly.com/python/sunburst-charts/">https://plotly.com/python/sunburst-charts/</a></p>
+<p>The City of Calgary (2023). Building Permits.<a rel="noopener" href="https://data.calgary.ca/Business-and-Economic-Activity/Building-Permits/c2es-76ed">https://data.calgary.ca/Business-and-Economic-Activity/Building-Permits/c2es-76ed</a>, [Retrieved September 16, 2023]​​</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[&#160;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<script type="module" src="https://s.brightspace.com/lib/bsi/20.23.9-217/unbundled/mathjax.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					if (document.querySelector('math') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+						document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+							elm.setAttribute('style', 'display: block; height: 0.5rem;');
+						});
+
+						window.D2L.MathJax.loadMathJax({
+							'outputScale': 1,
+							'renderLatex': false
+						});
+					}
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/20.23.9-217/unbundled/prism.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					document.querySelectorAll('.d2l-code').forEach(code => {
+						window.D2L.Prism.formatCodeElement(code);
+					});
+				});</script></body></html>

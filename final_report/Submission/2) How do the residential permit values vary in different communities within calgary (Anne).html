@@ -1,0 +1,2752 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    
+    
+    
+    
+
+
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Guiding Question 2 (Anne) : How do the residential building permit value vary in different communities within Calgary?<a rel="noopener" class="anchor-link" href="#Guiding-Question-2-(Anne)-:-How-do-the-residential-building-permit-value-vary-in-different-communities-within-Calgary?">&#182;</a></h1><h2>Domain<a rel="noopener" class="anchor-link" href="#Domain">&#182;</a></h2><p>Calgary has seen a surge in real estate and construction in recent years, with residential building permit value jumping 55% in 2021, rebounding from the low during the COVID-19 outbreak in 2020 despite a higher than national average unemployment rate. The residential permit value has been increasing rapidly since 2021, while the average hourly wage rate remains stagnant, making housing unaffordable for many Calgary residents.</p>
+<p>This project will explore how the residential building permit value varies in different communities within Calgary. I am focusing on the New-built Single-family and Commercial residential building permit and residential improvement building permit issued between 2018- OCT 2, 2023. I would like to see if the value of these permits will reflect the housing trend (large apartment complex versus single-family home versus home improvement) in each community and how the trends change before, during, and after the COVID-19 outbreak from 2018-2023. Since there are over 300 small communities around Calgary, we will divide those communities into eight zones (center, north, south, east, west, northwest, northeast, and southeast) as the image illustrates.</p>
+<p><img src="javascript://" alt="CalgarySectorMap2022.jpg"/></p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">plotly</span> <span class="k">as</span> <span class="nn">plotly</span>
+<span class="n">plotly</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&#39;5.9.0&#39;</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Visualization of residential building permit value among Calgary&#39;s community<a rel="noopener" class="anchor-link" href="#Visualization-of-residential-building-permit-value-among-Calgary&#39;s-community">&#182;</a></h1><h1>Task summary<a rel="noopener" class="anchor-link" href="#Task-summary">&#182;</a></h1><p>There are two datasets that I used from the Open Calgary website. My main dataset is Building Permits, and my secondary dataset is Community Crime and Disorder Statistics(2012-2019), which I use to create the community-to-sector map dictionary. I filter the Building Permits dataset into three datasets based on three types of residential building permits: New-built Commercial/Multi-Family, New-built Single-Family, and Residential improvement.</p>
+<p>Data wrangling tasks are dropping unused columns, changing some column types, creating community-to-sector maps, adding sector columns to the three residential permit datasets, and removing rows with missing information.</p>
+<p>Data visualization tasks are grouping the data by year and sector, calculating the yearly permit value, preplot the data for verification, and creating tables for plotting stack bar charts in Plotly.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Load data and begin wrangling process<a rel="noopener" class="anchor-link" href="#Load-data-and-begin-wrangling-process">&#182;</a></h1><p>I use the built-in query service on Open Data Calgary to get three datasets for each residential permit type: New-built Commercial/Multi-Family, New-built Single-Family, and Residential improvement. I also downloaded Community Crime and Disorder Statistics(2012-2019) without query filtering.</p>
+<p>Query description:</p>
+<ul>
+<li>Filter by: <code>IssuedDate</code>,<code>PermitClassMapped</code>, <code>PermitType</code>, <code>WorkClass</code>, <code>HousingUnits</code></li>
+<li>Exported as <code>Building_Permits6625L5Multi.csv</code>, <code>Building_Permits131191L5Single.csv</code>, <code>Building_Permits179416L3Improve.csv</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Load Commerical/Multi-Family permit, select columns, convert float Ward Boundaries column to string Ward column. </span>
+<span class="n">source_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Building_Permits6625L5Multi.csv&#39;</span><span class="p">)</span>
+<span class="n">Multi_df</span> <span class="o">=</span>  <span class="n">source_df</span><span class="p">[[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">,</span> <span class="s1">&#39;EstProjectCost&#39;</span><span class="p">,</span> <span class="s1">&#39;HousingUnits&#39;</span><span class="p">,</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">,</span><span class="s1">&#39;Ward Boundaries&#39;</span><span class="p">]]</span>
+<span class="n">Ward</span> <span class="o">=</span> <span class="n">Multi_df</span><span class="p">[</span><span class="s1">&#39;Ward Boundaries&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Ward</span><span class="p">)</span>
+<span class="n">Ward</span> <span class="o">=</span> <span class="n">Ward</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;Ward&quot;</span><span class="p">)</span>
+<span class="n">Multi_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Multi_df</span><span class="p">,</span><span class="n">Ward</span><span class="p">],</span><span class="n">axis</span> <span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Multi_df</span> <span class="o">=</span> <span class="n">Multi_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;Ward Boundaries&quot;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Multi_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="c1"># repeat above process with Single Familty permit. I don&#39;t need HousingUnits because this count as 1 unit.</span>
+<span class="n">sources_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Building_Permits131191L5Single.csv&#39;</span><span class="p">)</span>
+<span class="n">Single_df</span> <span class="o">=</span>  <span class="n">sources_df</span><span class="p">[[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">,</span> <span class="s1">&#39;EstProjectCost&#39;</span><span class="p">,</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">,</span><span class="s1">&#39;Ward Boundaries&#39;</span><span class="p">]]</span>
+<span class="n">Wards</span> <span class="o">=</span> <span class="n">Single_df</span><span class="p">[</span><span class="s1">&#39;Ward Boundaries&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Wards</span><span class="p">)</span>
+<span class="n">Wards</span> <span class="o">=</span> <span class="n">Wards</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;Ward&quot;</span><span class="p">)</span>
+<span class="n">Single_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Single_df</span><span class="p">,</span><span class="n">Wards</span><span class="p">],</span><span class="n">axis</span> <span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Single_df</span> <span class="o">=</span> <span class="n">Single_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;Ward Boundaries&quot;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Single_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="c1"># repeat above process with Residential Improvement permit. I don&#39;t need HousingUnits because this count as 0 unit.</span>
+<span class="n">sourcei_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Building_Permits179416L3Improve.csv&#39;</span><span class="p">)</span>
+<span class="n">Improv_df</span> <span class="o">=</span>  <span class="n">sourcei_df</span><span class="p">[[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">,</span> <span class="s1">&#39;EstProjectCost&#39;</span><span class="p">,</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">,</span><span class="s1">&#39;Ward Boundaries&#39;</span><span class="p">]]</span>
+<span class="n">Wardi</span> <span class="o">=</span> <span class="n">Improv_df</span><span class="p">[</span><span class="s1">&#39;Ward Boundaries&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Wardi</span><span class="p">)</span>
+<span class="n">Wardi</span> <span class="o">=</span> <span class="n">Wardi</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;Ward&quot;</span><span class="p">)</span>
+<span class="n">Improv_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Improv_df</span><span class="p">,</span><span class="n">Wardi</span><span class="p">],</span><span class="n">axis</span> <span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Improv_df</span> <span class="o">=</span> <span class="n">Improv_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;Ward Boundaries&quot;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Improv_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>HousingUnits</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/2/23</td>
+      <td>580,925</td>
+      <td>2</td>
+      <td>SAGE HILL</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10/2/23</td>
+      <td>1,409,387</td>
+      <td>4</td>
+      <td>SAGE HILL</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>10/2/23</td>
+      <td>1,366,160</td>
+      <td>2</td>
+      <td>PARKHILL</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10/2/23</td>
+      <td>1,926,194</td>
+      <td>8</td>
+      <td>MAHOGANY</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>10/2/23</td>
+      <td>969,508</td>
+      <td>4</td>
+      <td>MAHOGANY</td>
+      <td>nan</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2022/11/28</td>
+      <td>373,884</td>
+      <td>CAMBRIAN HEIGHTS</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2021/11/10</td>
+      <td>NaN</td>
+      <td>WEST HILLHURST</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2022/11/09</td>
+      <td>375,787</td>
+      <td>BELMONT</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2022/05/13</td>
+      <td>315,574</td>
+      <td>AMBLETON</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2022/11/30</td>
+      <td>259,719</td>
+      <td>MAHOGANY</td>
+      <td>nan</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/2/23</td>
+      <td>3,942</td>
+      <td>CARRINGTON</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10/2/23</td>
+      <td>5,000</td>
+      <td>MAYLAND HEIGHTS</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>10/2/23</td>
+      <td>55,549</td>
+      <td>CRANSTON</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10/2/23</td>
+      <td>3,000</td>
+      <td>GLENDALE</td>
+      <td>nan</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>10/2/23</td>
+      <td>46,677</td>
+      <td>AMBLETON</td>
+      <td>nan</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>Now, I check if the EstProjectCost column of each dataset has NAN or 0. If so, I will remove them. Only single-family and residential improvement permit dataset has NAN in their EstProjectCost column. Then, I checked the CommunityName column of each dataset and found no NAN, so I am good to go.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">Multi_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="n">Single_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="n">Improv_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+
+<span class="n">Improv_df</span> <span class="o">=</span> <span class="n">Improv_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">])</span>
+<span class="n">Single_df</span> <span class="o">=</span> <span class="n">Single_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">])</span>
+
+<span class="n">Multi_df</span><span class="p">[</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="n">Single_df</span><span class="p">[</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="n">Improv_df</span><span class="p">[</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="n">Single_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="n">Improv_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>False</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>Now I have to map community name to eight sectors, which is a bit tricky than mapping ward boundaries to eight sectors, because there are only 14 wards but over 300 communities. But there are a lot of missing data in the ward coulmn and none in community name I have no choice. Luckily, I can extract the communities and sectors map from Community Crime and Disorder Statistics 2012-2019 dataset which contain most of the communites in my Building Permit dataset. 
+I filter unique community name along with Sector from the dataset, check for missing values, and change the Community Name columns to match the column name in my main dataset so I can merge them.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#Update Community to Sectors Map</span>
+
+<span class="n">Crime_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Community_Crime_and_Disorder_Statistics__2012-2019_.csv&#39;</span><span class="p">)</span>
+<span class="n">CrimeUnique_df</span> <span class="o">=</span> <span class="n">Crime_df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span> <span class="o">=</span> <span class="s2">&quot;Community Name&quot;</span><span class="p">)</span>
+<span class="n">Commumap_df</span> <span class="o">=</span> <span class="n">CrimeUnique_df</span><span class="p">[[</span><span class="s1">&#39;Community Name&#39;</span><span class="p">,</span><span class="s1">&#39;Sector&#39;</span><span class="p">]]</span> 
+<span class="n">Commumap_df</span> <span class="o">=</span> <span class="n">Commumap_df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Community Name&quot;</span><span class="p">:</span> <span class="s2">&quot;CommunityName&quot;</span><span class="p">})</span>
+<span class="n">Commumap_df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Commumap_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+
+<span class="c1"># Add sector column by merging with community map using community name as merge key</span>
+<span class="n">MultiWCommu_df</span> <span class="o">=</span> <span class="n">Multi_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">Commumap_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">MultiWCommu_df</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>CommunityName</th>
+      <th>Sector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>THORNCLIFFE</td>
+      <td>NORTH</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>WOODBINE</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>WILLOW PARK</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>LINCOLN PARK</td>
+      <td>WEST</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>RAMSAY</td>
+      <td>CENTRE</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>HousingUnits</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+      <th>Sector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3809</th>
+      <td>7/10/13</td>
+      <td>849,474</td>
+      <td>4</td>
+      <td>ALBERT PARK/RADISSON HEIGHTS</td>
+      <td>12.0</td>
+      <td>EAST</td>
+    </tr>
+    <tr>
+      <th>3451</th>
+      <td>4/11/14</td>
+      <td>16,175,000</td>
+      <td>100</td>
+      <td>ALBERT PARK/RADISSON HEIGHTS</td>
+      <td>12.0</td>
+      <td>EAST</td>
+    </tr>
+    <tr>
+      <th>2722</th>
+      <td>9/7/16</td>
+      <td>2,223,322</td>
+      <td>23</td>
+      <td>ALBERT PARK/RADISSON HEIGHTS</td>
+      <td>12.0</td>
+      <td>EAST</td>
+    </tr>
+    <tr>
+      <th>1556</th>
+      <td>2/21/20</td>
+      <td>875,000</td>
+      <td>4</td>
+      <td>ALBERT PARK/RADISSON HEIGHTS</td>
+      <td>12.0</td>
+      <td>EAST</td>
+    </tr>
+    <tr>
+      <th>1658</th>
+      <td>11/5/19</td>
+      <td>900,000</td>
+      <td>4</td>
+      <td>ALBERT PARK/RADISSON HEIGHTS</td>
+      <td>12.0</td>
+      <td>EAST</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>127</th>
+      <td>6/26/23</td>
+      <td>834,684</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1675</th>
+      <td>10/25/19</td>
+      <td>1,135,741</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>129</th>
+      <td>6/26/23</td>
+      <td>827,467</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1814</th>
+      <td>6/19/19</td>
+      <td>1,114,523</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1848</th>
+      <td>5/16/19</td>
+      <td>1,135,741</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>6626 rows &#215; 6 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>Seem like the Community to sector map still missing some community Name, I have to take a look and manaually update it. Looks like I am missing 10 community. So I search for missing community update it. So now I have created a new cvs file, Commap.cvs and use it to add sector column to all three dataset.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Update Community map manually and reload it</span>
+
+<span class="n">Commu2SectorMap_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Commumap.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># Merge again and test if there still NaN in sector column</span>
+
+<span class="n">MultiWCommu_df</span> <span class="o">=</span> <span class="n">Multi_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">Commu2SectorMap_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">)</span>
+<span class="n">narow</span> <span class="o">=</span> <span class="n">MultiWCommu_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">MultiWCommu_df</span><span class="o">.</span><span class="n">Sector</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span>
+<span class="n">display</span><span class="p">(</span><span class="n">narow</span><span class="p">)</span>
+
+<span class="n">SingleWCommu_df</span> <span class="o">=</span> <span class="n">Single_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">Commu2SectorMap_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">)</span>
+<span class="n">narows</span> <span class="o">=</span> <span class="n">SingleWCommu_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">SingleWCommu_df</span><span class="o">.</span><span class="n">Sector</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span>
+<span class="n">display</span><span class="p">(</span><span class="n">narows</span><span class="p">)</span>
+
+<span class="n">ImprovWCommu_df</span> <span class="o">=</span> <span class="n">Improv_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">Commu2SectorMap_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">)</span>
+<span class="n">narowi</span> <span class="o">=</span> <span class="n">ImprovWCommu_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ImprovWCommu_df</span><span class="o">.</span><span class="n">Sector</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span>
+<span class="n">display</span><span class="p">(</span><span class="n">narowi</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>HousingUnits</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+      <th>Sector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1359</th>
+      <td>11/6/20</td>
+      <td>770,785</td>
+      <td>4</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1481</th>
+      <td>6/23/20</td>
+      <td>1,992,860</td>
+      <td>10</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>953</th>
+      <td>12/3/21</td>
+      <td>1,064,277</td>
+      <td>4</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1345</th>
+      <td>12/2/20</td>
+      <td>9,602,466</td>
+      <td>64</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1984</th>
+      <td>12/18/18</td>
+      <td>477,806</td>
+      <td>6</td>
+      <td>Undefined</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1264</th>
+      <td>3/19/21</td>
+      <td>1,542,523</td>
+      <td>10</td>
+      <td>Undefined</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2491</th>
+      <td>7/4/17</td>
+      <td>20,261,732</td>
+      <td>162</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1339</th>
+      <td>12/16/20</td>
+      <td>1,101,602</td>
+      <td>6</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>939</th>
+      <td>12/13/21</td>
+      <td>1,546,871</td>
+      <td>6</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1268</th>
+      <td>3/16/21</td>
+      <td>907,963</td>
+      <td>5</td>
+      <td>Undefined</td>
+      <td>11.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1272</th>
+      <td>3/9/21</td>
+      <td>809,223</td>
+      <td>5</td>
+      <td>Undefined</td>
+      <td>11.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1986</th>
+      <td>12/18/18</td>
+      <td>567,662</td>
+      <td>8</td>
+      <td>Undefined</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1301</th>
+      <td>2/9/21</td>
+      <td>916,680</td>
+      <td>5</td>
+      <td>Undefined</td>
+      <td>11.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1140</th>
+      <td>6/15/21</td>
+      <td>13,133,900</td>
+      <td>60</td>
+      <td>Undefined</td>
+      <td>5.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1987</th>
+      <td>12/18/18</td>
+      <td>325,791</td>
+      <td>4</td>
+      <td>Undefined</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>928</th>
+      <td>12/24/21</td>
+      <td>1,044,115</td>
+      <td>4</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1170</th>
+      <td>5/31/21</td>
+      <td>10,692,300</td>
+      <td>48</td>
+      <td>Undefined</td>
+      <td>5.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2301</th>
+      <td>3/19/18</td>
+      <td>13,107,065</td>
+      <td>83</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1160</th>
+      <td>6/4/21</td>
+      <td>762,473</td>
+      <td>4</td>
+      <td>Undefined</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1371</th>
+      <td>10/27/20</td>
+      <td>1,124,995</td>
+      <td>6</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>843</th>
+      <td>3/17/22</td>
+      <td>1,515,280</td>
+      <td>9</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>757</th>
+      <td>5/4/22</td>
+      <td>2,833,228</td>
+      <td>12</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1370</th>
+      <td>10/30/20</td>
+      <td>770,785</td>
+      <td>4</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1206</th>
+      <td>5/10/21</td>
+      <td>1,479,205</td>
+      <td>8</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>937</th>
+      <td>12/14/21</td>
+      <td>1,546,871</td>
+      <td>6</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1207</th>
+      <td>5/7/21</td>
+      <td>1,479,205</td>
+      <td>8</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>838</th>
+      <td>3/25/22</td>
+      <td>1,999,630</td>
+      <td>15</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1443</th>
+      <td>8/12/20</td>
+      <td>1,134,102</td>
+      <td>7</td>
+      <td>Undefined</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>950</th>
+      <td>12/7/21</td>
+      <td>1,827,288</td>
+      <td>7</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1447</th>
+      <td>8/10/20</td>
+      <td>1,025,547</td>
+      <td>6</td>
+      <td>Undefined</td>
+      <td>6.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>904</th>
+      <td>1/26/22</td>
+      <td>11,742,885</td>
+      <td>47</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>905</th>
+      <td>1/26/22</td>
+      <td>6,118,078</td>
+      <td>47</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1365</th>
+      <td>11/4/20</td>
+      <td>947,765</td>
+      <td>5</td>
+      <td>Undefined</td>
+      <td>3.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>800</th>
+      <td>4/22/22</td>
+      <td>3,244,257</td>
+      <td>12</td>
+      <td>Undefined</td>
+      <td>4.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2007</th>
+      <td>12/5/18</td>
+      <td>1,500,000</td>
+      <td>4</td>
+      <td>Undefined</td>
+      <td>7.0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+      <th>Sector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4854</th>
+      <td>2023/07/18</td>
+      <td>326,677</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3598</th>
+      <td>2023/06/20</td>
+      <td>427,996</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2421</th>
+      <td>2023/05/31</td>
+      <td>262,511</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>529</th>
+      <td>2023/07/26</td>
+      <td>339,427</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3021</th>
+      <td>2023/06/09</td>
+      <td>262,511</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1953</th>
+      <td>2023/06/12</td>
+      <td>274,500</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2069</th>
+      <td>2023/06/01</td>
+      <td>275,962</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2775</th>
+      <td>2023/07/27</td>
+      <td>350,085</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1654</th>
+      <td>2023/03/23</td>
+      <td>202,247</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4950</th>
+      <td>2023/07/18</td>
+      <td>312,069</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2458</th>
+      <td>2023/06/21</td>
+      <td>274,500</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1223</th>
+      <td>2023/03/03</td>
+      <td>166,041</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>348</th>
+      <td>2023/07/26</td>
+      <td>339,427</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>297</th>
+      <td>2023/07/20</td>
+      <td>326,506</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1850</th>
+      <td>2023/07/18</td>
+      <td>329,513</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2655</th>
+      <td>2023/03/23</td>
+      <td>355,375</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5141</th>
+      <td>2023/07/18</td>
+      <td>312,473</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4934</th>
+      <td>2023/06/10</td>
+      <td>422,102</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1807</th>
+      <td>2023/03/23</td>
+      <td>165,854</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3054</th>
+      <td>2023/03/17</td>
+      <td>165,854</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1864</th>
+      <td>2023/07/18</td>
+      <td>306,008</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>300</th>
+      <td>2023/05/31</td>
+      <td>432,076</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3328</th>
+      <td>2023/06/02</td>
+      <td>272,168</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4917</th>
+      <td>2023/06/20</td>
+      <td>272,168</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2419</th>
+      <td>2023/05/31</td>
+      <td>262,511</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2413</th>
+      <td>2023/09/28</td>
+      <td>327,038</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5321</th>
+      <td>2023/06/29</td>
+      <td>271,790</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3633</th>
+      <td>2023/07/17</td>
+      <td>240,560</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3130</th>
+      <td>2023/03/17</td>
+      <td>202,419</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2968</th>
+      <td>2023/07/11</td>
+      <td>356,430</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2063</th>
+      <td>2023/06/15</td>
+      <td>275,530</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5262</th>
+      <td>2023/06/29</td>
+      <td>311,721</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+      <th>Sector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3078</th>
+      <td>6/12/23</td>
+      <td>40,505</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2730</th>
+      <td>6/21/23</td>
+      <td>44,555</td>
+      <td>Undefined</td>
+      <td>nan</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>The Undefined and NaN community name causes the NaN in the column sector. Only the Muti-Commercial dataset has ward information for those Undefined communities. Since the Single-Family dataset has 32 entries with no community name and ward information, and the Residential improvement dataset has 14, I decided to remove those entries. However, since the Muti-Commercial dataset has ward information, I decided to replace Undefined CommunityName with their ward number and add the ward number into my Commu2SectorMap data frame so I can merge them again to get rid of NaN in the sector column.</p>
+<p>I also convert the AppliedDate column to Pandas date-time type and the EstProjectCost column to integer.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#replacing the Undefined community name with Ward.</span>
+<span class="n">Multi_df</span><span class="o">.</span><span class="n">CommunityName</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Multi_df</span><span class="o">.</span><span class="n">CommunityName</span> <span class="o">==</span> <span class="s1">&#39;Undefined&#39;</span><span class="p">,</span>
+                                       <span class="n">Multi_df</span><span class="p">[</span><span class="s1">&#39;Ward&#39;</span><span class="p">],</span><span class="n">Multi_df</span><span class="o">.</span><span class="n">CommunityName</span><span class="p">)</span>
+<span class="c1"># Create Ward dictinary and add it into the Community to Sector Map</span>
+<span class="n">WardDict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">:[</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span><span class="s1">&#39;2.0&#39;</span><span class="p">,</span><span class="s1">&#39;3.0&#39;</span><span class="p">,</span><span class="s1">&#39;4.0&#39;</span><span class="p">,</span><span class="s1">&#39;5.0&#39;</span><span class="p">,</span><span class="s1">&#39;6.0&#39;</span><span class="p">,</span><span class="s1">&#39;7.0&#39;</span><span class="p">,</span><span class="s1">&#39;8.0&#39;</span><span class="p">,</span><span class="s1">&#39;9.0&#39;</span><span class="p">,</span><span class="s1">&#39;10.0&#39;</span><span class="p">,</span><span class="s1">&#39;11.0&#39;</span><span class="p">,</span><span class="s1">&#39;12.0&#39;</span><span class="p">,</span><span class="s1">&#39;13.0&#39;</span><span class="p">,</span><span class="s1">&#39;14.0&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;Sector&#39;</span><span class="p">:[</span><span class="s1">&#39;NORTHWEST&#39;</span><span class="p">,</span><span class="s1">&#39;NORTH&#39;</span><span class="p">,</span><span class="s1">&#39;NORTH&#39;</span><span class="p">,</span><span class="s1">&#39;NORTH&#39;</span><span class="p">,</span><span class="s1">&#39;NORTHEAST&#39;</span><span class="p">,</span><span class="s1">&#39;WEST&#39;</span><span class="p">,</span><span class="s1">&#39;CENTRE&#39;</span><span class="p">,</span><span class="s1">&#39;CENTRE&#39;</span><span class="p">,</span><span class="s1">&#39;EAST&#39;</span><span class="p">,</span><span class="s1">&#39;NORTHEAST&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;SOUTH&#39;</span><span class="p">,</span><span class="s1">&#39;SOUTHEAST&#39;</span><span class="p">,</span><span class="s1">&#39;SOUTH&#39;</span><span class="p">,</span><span class="s1">&#39;SOUTH&#39;</span><span class="p">]}</span>
+<span class="n">WardDict_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">WardDict</span><span class="p">)</span>
+<span class="n">Commu2SectorMap_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Commu2SectorMap_df</span><span class="p">,</span> <span class="n">WardDict_df</span><span class="p">],</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Merge again to get rid of NaN in Sector column of MutiWCommu. Don&#39;t need to do this with other 2 since I have to drop it</span>
+<span class="n">MultiWCommu_df</span> <span class="o">=</span> <span class="n">Multi_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">Commu2SectorMap_df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;CommunityName&#39;</span><span class="p">)</span>
+
+<span class="c1"># Drop the row with Undefined community and missing ward information </span>
+<span class="n">SingleWCommu_df</span> <span class="o">=</span> <span class="n">SingleWCommu_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sector&#39;</span><span class="p">])</span>
+
+<span class="c1"># Drop the row with Undefined community and missing ward information</span>
+<span class="n">ImprovWCommu_df</span> <span class="o">=</span> <span class="n">ImprovWCommu_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sector&#39;</span><span class="p">])</span>
+
+<span class="c1"># Change issue date to date-time type</span>
+<span class="n">MultiWCommu_df</span><span class="p">[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">MultiWCommu_df</span><span class="p">[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">])</span> 
+<span class="n">SingleWCommu_df</span><span class="p">[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">SingleWCommu_df</span><span class="p">[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">])</span>
+<span class="n">ImprovWCommu_df</span><span class="p">[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">ImprovWCommu_df</span><span class="p">[</span><span class="s1">&#39;IssuedDate&#39;</span><span class="p">])</span>
+
+<span class="c1"># Change the EstProjectCost column from string to int. I need to remove the comma first so I can convert to int</span>
+<span class="n">MultiWCommu_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MultiWCommu_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">SingleWCommu_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SingleWCommu_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">ImprovWCommu_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImprovWCommu_df</span><span class="p">[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">MultiWCommu_df</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">SingleWCommu_df</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">ImprovWCommu_df</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>HousingUnits</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+      <th>Sector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1268</th>
+      <td>2021-03-16</td>
+      <td>907963</td>
+      <td>5</td>
+      <td>11.0</td>
+      <td>11.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>1272</th>
+      <td>2021-03-09</td>
+      <td>809223</td>
+      <td>5</td>
+      <td>11.0</td>
+      <td>11.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>1301</th>
+      <td>2021-02-09</td>
+      <td>916680</td>
+      <td>5</td>
+      <td>11.0</td>
+      <td>11.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>1206</th>
+      <td>2021-05-10</td>
+      <td>1479205</td>
+      <td>8</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>NORTH</td>
+    </tr>
+    <tr>
+      <th>1371</th>
+      <td>2020-10-27</td>
+      <td>1124995</td>
+      <td>6</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>NORTH</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1863</th>
+      <td>2019-05-02</td>
+      <td>1158342</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>1878</th>
+      <td>2019-04-11</td>
+      <td>681195</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>1879</th>
+      <td>2019-04-11</td>
+      <td>1125554</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>1848</th>
+      <td>2019-05-16</td>
+      <td>1135741</td>
+      <td>4</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>1332</th>
+      <td>2020-12-30</td>
+      <td>1461013</td>
+      <td>8</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+  </tbody>
+</table>
+<p>6626 rows &#215; 6 columns</p>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+      <th>Sector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>80714</th>
+      <td>2011-02-25</td>
+      <td>151527</td>
+      <td>ABBEYDALE</td>
+      <td>12.0</td>
+      <td>NORTHEAST</td>
+    </tr>
+    <tr>
+      <th>80037</th>
+      <td>2011-07-14</td>
+      <td>441365</td>
+      <td>ACADIA</td>
+      <td>10.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>91126</th>
+      <td>2013-05-30</td>
+      <td>362893</td>
+      <td>ACADIA</td>
+      <td>10.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>106298</th>
+      <td>2016-07-26</td>
+      <td>323962</td>
+      <td>ACADIA</td>
+      <td>10.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>103754</th>
+      <td>2015-10-23</td>
+      <td>301952</td>
+      <td>ACADIA</td>
+      <td>10.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1463</th>
+      <td>2023-09-21</td>
+      <td>353680</td>
+      <td>YORKVILLE</td>
+      <td>nan</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>121788</th>
+      <td>2020-11-18</td>
+      <td>193632</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>5336</th>
+      <td>2023-08-02</td>
+      <td>432043</td>
+      <td>YORKVILLE</td>
+      <td>nan</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>123918</th>
+      <td>2021-02-02</td>
+      <td>194845</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>125150</th>
+      <td>2021-06-28</td>
+      <td>432043</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+  </tbody>
+</table>
+<p>130736 rows &#215; 5 columns</p>
+</div>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>IssuedDate</th>
+      <th>EstProjectCost</th>
+      <th>CommunityName</th>
+      <th>Ward</th>
+      <th>Sector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>91844</th>
+      <td>2012-10-18</td>
+      <td>15000</td>
+      <td>ABBEYDALE</td>
+      <td>12.0</td>
+      <td>NORTHEAST</td>
+    </tr>
+    <tr>
+      <th>2055</th>
+      <td>2023-07-11</td>
+      <td>2000</td>
+      <td>ABBEYDALE</td>
+      <td>nan</td>
+      <td>NORTHEAST</td>
+    </tr>
+    <tr>
+      <th>172338</th>
+      <td>2000-08-30</td>
+      <td>9570</td>
+      <td>ABBEYDALE</td>
+      <td>12.0</td>
+      <td>NORTHEAST</td>
+    </tr>
+    <tr>
+      <th>148432</th>
+      <td>2005-05-17</td>
+      <td>9870</td>
+      <td>ABBEYDALE</td>
+      <td>12.0</td>
+      <td>NORTHEAST</td>
+    </tr>
+    <tr>
+      <th>72803</th>
+      <td>2015-02-26</td>
+      <td>122500</td>
+      <td>ABBEYDALE</td>
+      <td>12.0</td>
+      <td>NORTHEAST</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>5811</th>
+      <td>2023-02-21</td>
+      <td>28298</td>
+      <td>YORKVILLE</td>
+      <td>nan</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>14502</th>
+      <td>2022-02-24</td>
+      <td>34798</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>34746</th>
+      <td>2020-01-28</td>
+      <td>23900</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>26010</th>
+      <td>2020-11-18</td>
+      <td>12858</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+    <tr>
+      <th>24173</th>
+      <td>2021-02-12</td>
+      <td>13755</td>
+      <td>YORKVILLE</td>
+      <td>6.0</td>
+      <td>SOUTH</td>
+    </tr>
+  </tbody>
+</table>
+<p>175126 rows &#215; 5 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Visualization begins<a rel="noopener" class="anchor-link" href="#Visualization-begins">&#182;</a></h1><p>Finally, my data-wrangling tasks are a success! Now, I will start to prepare my data for visualization.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Group by Year so I can get yearly EstProjectCost for each sector</span>
+<span class="n">MultiYear</span> <span class="o">=</span> <span class="n">MultiWCommu_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">MultiWCommu_df</span><span class="o">.</span><span class="n">IssuedDate</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="s1">&#39;Sector&#39;</span><span class="p">],</span><span class="n">as_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">MultiYear</span><span class="p">)</span>
+<span class="n">SingleYear</span> <span class="o">=</span> <span class="n">SingleWCommu_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">SingleWCommu_df</span><span class="o">.</span><span class="n">IssuedDate</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="s1">&#39;Sector&#39;</span><span class="p">],</span><span class="n">as_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">SingleYear</span><span class="p">)</span>
+<span class="n">ImprovYear</span> <span class="o">=</span> <span class="n">ImprovWCommu_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">ImprovWCommu_df</span><span class="o">.</span><span class="n">IssuedDate</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="s1">&#39;Sector&#39;</span><span class="p">],</span><span class="n">as_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s1">&#39;EstProjectCost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">display</span><span class="p">(</span><span class="n">ImprovYear</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>IssuedDate  Sector   
+2000        CENTRE       114337522
+            EAST          16098198
+            NORTH          7616974
+            NORTHEAST      7357570
+            NORTHWEST     25252600
+                           ...    
+2023        NORTHEAST    111710577
+            NORTHWEST    117496901
+            SOUTH        165090967
+            SOUTHEAST    137599026
+            WEST         318603071
+Name: EstProjectCost, Length: 189, dtype: int64</pre>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>IssuedDate  Sector   
+2000        CENTRE        23228708
+            EAST           1557527
+            NORTH         91507117
+            NORTHEAST     84846542
+            NORTHWEST    194974840
+                           ...    
+2023        NORTHEAST    182845981
+            NORTHWEST     94970150
+            SOUTH        233156378
+            SOUTHEAST    184531020
+            WEST          56401500
+Name: EstProjectCost, Length: 192, dtype: int64</pre>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>IssuedDate  Sector   
+2000        CENTRE       12796193
+            EAST          1970782
+            NORTH         5091377
+            NORTHEAST     4867353
+            NORTHWEST     7278539
+                           ...   
+2023        NORTHEAST    54223545
+            NORTHWEST    35124127
+            SOUTH        57943309
+            SOUTHEAST    36279922
+            WEST         26458502
+Name: EstProjectCost, Length: 192, dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>I will first plot them seperately to see the overall scale.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Muti-Commercial Residential Permit value by sector&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">MultiYear</span><span class="p">[</span><span class="mi">2023</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2023&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Permit value $&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">MultiYear</span><span class="p">[</span><span class="mi">2022</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2022&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">MultiYear</span><span class="p">[</span><span class="mi">2021</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2021&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">MultiYear</span><span class="p">[</span><span class="mi">2020</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2020&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Permit value $&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">MultiYear</span><span class="p">[</span><span class="mi">2019</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2019&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">MultiYear</span><span class="p">[</span><span class="mi">2018</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2018&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Single-Family Residential Permit value by sector&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">SingleYear</span><span class="p">[</span><span class="mi">2023</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2023&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Permit value $&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">SingleYear</span><span class="p">[</span><span class="mi">2022</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2022&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">SingleYear</span><span class="p">[</span><span class="mi">2021</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2021&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">SingleYear</span><span class="p">[</span><span class="mi">2020</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2020&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Permit value $&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">SingleYear</span><span class="p">[</span><span class="mi">2019</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2019&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">SingleYear</span><span class="p">[</span><span class="mi">2018</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2018&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Residential Improvement Permit value by sector&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2023</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2023&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Permit value $&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2022</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2022&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2021</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2021&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2020</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2020&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Permit value $&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2019</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2019&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2018</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;2018&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>Now, I will create tables for each year with three columns(Sector, Residential Permit Type, Total Permit Value) and 24 rows and plot the permit value of three permit types together in one plot for each year.</p>
+<p>I will also create line plots to show each type of permit value over time for the 8 eight sectors. To do this, I will create tables for each permit type with three columns( Year, Sector, Total Permit Value) and 48 rows.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">S2018</span> <span class="o">=</span> <span class="n">SingleYear</span><span class="p">[</span><span class="mi">2018</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">S2019</span> <span class="o">=</span> <span class="n">SingleYear</span><span class="p">[</span><span class="mi">2019</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">S2020</span> <span class="o">=</span> <span class="n">SingleYear</span><span class="p">[</span><span class="mi">2020</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">S2021</span> <span class="o">=</span> <span class="n">SingleYear</span><span class="p">[</span><span class="mi">2021</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">S2022</span> <span class="o">=</span> <span class="n">SingleYear</span><span class="p">[</span><span class="mi">2022</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">S2023</span> <span class="o">=</span> <span class="n">SingleYear</span><span class="p">[</span><span class="mi">2023</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">Svec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Single-Family&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span>
+
+<span class="n">M2018</span> <span class="o">=</span> <span class="n">MultiYear</span><span class="p">[</span><span class="mi">2018</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">M2019</span> <span class="o">=</span> <span class="n">MultiYear</span><span class="p">[</span><span class="mi">2019</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">M2020</span> <span class="o">=</span> <span class="n">MultiYear</span><span class="p">[</span><span class="mi">2020</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">M2021</span> <span class="o">=</span> <span class="n">MultiYear</span><span class="p">[</span><span class="mi">2021</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">M2022</span> <span class="o">=</span> <span class="n">MultiYear</span><span class="p">[</span><span class="mi">2022</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">M2023</span> <span class="o">=</span> <span class="n">MultiYear</span><span class="p">[</span><span class="mi">2023</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">Mvec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Muti-Commercial&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span>
+
+<span class="n">I2018</span> <span class="o">=</span> <span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2018</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">I2019</span> <span class="o">=</span> <span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2019</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">I2020</span> <span class="o">=</span> <span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2020</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">I2021</span> <span class="o">=</span> <span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2021</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">I2022</span> <span class="o">=</span> <span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2022</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">I2023</span> <span class="o">=</span> <span class="n">ImprovYear</span><span class="p">[</span><span class="mi">2023</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+<span class="n">Ivec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Residential Improvement&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span>
+
+<span class="n">ALLsector_vec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CENTRE&#39;</span><span class="p">,</span><span class="s1">&#39;EAST&#39;</span><span class="p">,</span><span class="s1">&#39;NORTH&#39;</span><span class="p">,</span><span class="s1">&#39;NORTHEAST&#39;</span><span class="p">,</span><span class="s1">&#39;NORTHWEST&#39;</span><span class="p">,</span><span class="s1">&#39;SOUTH&#39;</span><span class="p">,</span><span class="s1">&#39;SOUTHEAST&#39;</span><span class="p">,</span><span class="s1">&#39;WEST&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span>
+<span class="n">ALLtype_vec</span> <span class="o">=</span> <span class="n">Svec</span> <span class="o">+</span> <span class="n">Mvec</span> <span class="o">+</span> <span class="n">Ivec</span>
+
+<span class="n">ALLvalue_2018</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">S2018</span><span class="p">,</span><span class="n">M2018</span><span class="p">,</span><span class="n">I2018</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_2018list</span> <span class="o">=</span> <span class="n">ALLvalue_2018</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">Table2018</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ALLsector_vec</span><span class="p">,</span><span class="n">ALLtype_vec</span><span class="p">,</span><span class="n">ALLvalue_2018list</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Residential Permit Type&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+
+<span class="n">ALLvalue_2019</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">S2019</span><span class="p">,</span><span class="n">M2019</span><span class="p">,</span><span class="n">I2019</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_2019list</span> <span class="o">=</span> <span class="n">ALLvalue_2019</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">Table2019</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ALLsector_vec</span><span class="p">,</span><span class="n">ALLtype_vec</span><span class="p">,</span><span class="n">ALLvalue_2019list</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Residential Permit Type&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+
+<span class="n">ALLvalue_2020</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">S2020</span><span class="p">,</span><span class="n">M2020</span><span class="p">,</span><span class="n">I2020</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_2020list</span> <span class="o">=</span> <span class="n">ALLvalue_2020</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">Table2020</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ALLsector_vec</span><span class="p">,</span><span class="n">ALLtype_vec</span><span class="p">,</span><span class="n">ALLvalue_2020list</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Residential Permit Type&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+
+<span class="n">ALLvalue_2021</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">S2021</span><span class="p">,</span><span class="n">M2021</span><span class="p">,</span><span class="n">I2021</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_2021list</span> <span class="o">=</span> <span class="n">ALLvalue_2021</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">Table2021</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ALLsector_vec</span><span class="p">,</span><span class="n">ALLtype_vec</span><span class="p">,</span><span class="n">ALLvalue_2021list</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Residential Permit Type&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+
+<span class="n">ALLvalue_2022</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">S2022</span><span class="p">,</span><span class="n">M2022</span><span class="p">,</span><span class="n">I2022</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_2022list</span> <span class="o">=</span> <span class="n">ALLvalue_2022</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">Table2022</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ALLsector_vec</span><span class="p">,</span><span class="n">ALLtype_vec</span><span class="p">,</span><span class="n">ALLvalue_2022list</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Residential Permit Type&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+
+<span class="n">ALLvalue_2023</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">S2023</span><span class="p">,</span><span class="n">M2023</span><span class="p">,</span><span class="n">I2023</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_2023list</span> <span class="o">=</span> <span class="n">ALLvalue_2023</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">Table2023</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ALLsector_vec</span><span class="p">,</span><span class="n">ALLtype_vec</span><span class="p">,</span><span class="n">ALLvalue_2023list</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Residential Permit Type&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[13]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
+<span class="kn">from</span> <span class="nn">plotly.subplots</span> <span class="kn">import</span> <span class="n">make_subplots</span>
+
+<span class="c1"># plot the long (tidy) dataframe</span>
+<span class="n">fig18</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">Table2018</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Residential Permit Type&quot;</span><span class="p">,</span><span class="n">text_auto</span><span class="o">=</span><span class="s1">&#39;.4s&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;2018 Permit Value&quot;</span><span class="p">,</span> <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span>
+<span class="n">fig18</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">fig18</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>/Users/annesunrawee/opt/anaconda3/lib/python3.9/site-packages/scipy/__init__.py:155: UserWarning: A NumPy version &gt;=1.18.5 and &lt;1.25.0 is required for this version of SciPy (detected version 1.26.1
+  warnings.warn(f&quot;A NumPy version &gt;={np_minversion} and &lt;{np_maxversion}&quot;
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+        
+        
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig19</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">Table2019</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Residential Permit Type&quot;</span><span class="p">,</span><span class="n">text_auto</span><span class="o">=</span><span class="s1">&#39;.4s&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;2019 Permit Value&quot;</span><span class="p">,</span> <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span>
+<span class="n">fig19</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">fig19</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig20</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">Table2020</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Residential Permit Type&quot;</span><span class="p">,</span><span class="n">text_auto</span><span class="o">=</span><span class="s1">&#39;.4s&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;2020 Permit Value&quot;</span><span class="p">,</span> <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span>
+<span class="n">fig20</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">fig20</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig21</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">Table2021</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Residential Permit Type&quot;</span><span class="p">,</span><span class="n">text_auto</span><span class="o">=</span><span class="s1">&#39;.4s&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;2021 Permit Value&quot;</span><span class="p">,</span> <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span>
+<span class="n">fig21</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">fig21</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig22</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">Table2022</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Residential Permit Type&quot;</span><span class="p">,</span><span class="n">text_auto</span><span class="o">=</span><span class="s1">&#39;.4s&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;2022 Permit Value&quot;</span><span class="p">,</span> <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span>
+<span class="n">fig22</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">fig22</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[18]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig23</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">Table2023</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Residential Permit Type&quot;</span><span class="p">,</span><span class="n">text_auto</span><span class="o">=</span><span class="s1">&#39;.4s&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;2023 Permit Value&quot;</span><span class="p">,</span> <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span>
+<span class="n">fig23</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">fig23</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[19]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">ALLsectoryear_vec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CENTRE&#39;</span><span class="p">,</span><span class="s1">&#39;EAST&#39;</span><span class="p">,</span><span class="s1">&#39;NORTH&#39;</span><span class="p">,</span><span class="s1">&#39;NORTHEAST&#39;</span><span class="p">,</span><span class="s1">&#39;NORTHWEST&#39;</span><span class="p">,</span><span class="s1">&#39;SOUTH&#39;</span><span class="p">,</span><span class="s1">&#39;SOUTHEAST&#39;</span><span class="p">,</span><span class="s1">&#39;WEST&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">6</span>
+<span class="n">Allyear_vec</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;2018&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;2019&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;2020&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;2021&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;2022&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;2023&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span>
+
+<span class="n">ALLvalue_S</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">S2018</span><span class="p">,</span><span class="n">S2019</span><span class="p">,</span><span class="n">S2020</span><span class="p">,</span><span class="n">S2021</span><span class="p">,</span><span class="n">S2022</span><span class="p">,</span><span class="n">S2023</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_Slist</span> <span class="o">=</span> <span class="n">ALLvalue_S</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">TableS</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">Allyear_vec</span><span class="p">,</span><span class="n">ALLsectoryear_vec</span><span class="p">,</span><span class="n">ALLvalue_Slist</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+
+<span class="n">ALLvalue_M</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">M2018</span><span class="p">,</span><span class="n">M2019</span><span class="p">,</span><span class="n">M2020</span><span class="p">,</span><span class="n">M2021</span><span class="p">,</span><span class="n">M2022</span><span class="p">,</span><span class="n">M2023</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_Mlist</span> <span class="o">=</span> <span class="n">ALLvalue_M</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">TableM</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">Allyear_vec</span><span class="p">,</span><span class="n">ALLsectoryear_vec</span><span class="p">,</span><span class="n">ALLvalue_Mlist</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+
+<span class="n">ALLvalue_I</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">I2018</span><span class="p">,</span><span class="n">I2019</span><span class="p">,</span><span class="n">I2020</span><span class="p">,</span><span class="n">I2021</span><span class="p">,</span><span class="n">I2022</span><span class="p">,</span><span class="n">I2023</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ALLvalue_Ilist</span> <span class="o">=</span> <span class="n">ALLvalue_I</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="n">TableI</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">Allyear_vec</span><span class="p">,</span><span class="n">ALLsectoryear_vec</span><span class="p">,</span><span class="n">ALLvalue_Ilist</span><span class="p">)),</span>
+                         <span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span><span class="s1">&#39;Sector&#39;</span><span class="p">,</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">])</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">figS</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">TableS</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Year&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span><span class="n">text</span> <span class="o">=</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Single-Family Permit Value&quot;</span><span class="p">)</span>
+<span class="n">figS</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">figS</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">figM</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">TableM</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Year&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span><span class="n">text</span> <span class="o">=</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Multi-Commercial Permit Value&quot;</span><span class="p">)</span>
+<span class="n">figM</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">figM</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[22]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">figI</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">TableI</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;Year&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Total Permit Value&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;Sector&quot;</span><span class="p">,</span><span class="n">text</span> <span class="o">=</span><span class="s1">&#39;Total Permit Value&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Residential Improvement Permit Value&quot;</span><span class="p">)</span>
+<span class="n">figI</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,))</span>
+<span class="n">figI</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output">
+<div>                            <div class="plotly-graph-div" style="height:525px;width:100%;"></div>                    </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Conclusion<a rel="noopener" class="anchor-link" href="#Conclusion">&#182;</a></h1><p>I will summarize the findings to my guiding question: How do the residential building permit value vary in different communities within Calgary?</p>
+<p><strong>Findings from bar plots visualization</strong></p>
+<ul>
+<li><p>The EAST sector has the smallest permit value of all types because it is the smallest sector. However, the WEST sector, the second smallest sector, has a much higher permit value than the EAST sector.</p>
+</li>
+<li><p>The CENTER sector has the highest Commercial permit value, with several multimillion-dollar projects concentrated in the downtown Beltline area in 2018, 2019, and 2021.</p>
+</li>
+<li><p>The NORTHWEST sector shares the same trend as the CENTER sector, where the commercial residential building permit value dominates the sector. The concentration of large-scale commercial residential buildings surrounding the University of Calgary campus is a contributing factor to the high commercial residential permit value in the sector.</p>
+</li>
+<li><p>The NORTHWEST sector had a very high commercial residential building permit value in 2018. Part of it is due to two constructions of apartment/condo complex projects in the University District with over $123 M combined in value.</p>
+</li>
+<li><p>The NORTH and NORTHEAST sectors have led in single-family permit value since 2018, with many new communities, such as Ambleton, Lewisburg, Glacier Ridge, Cornerstone, and Homestead. SOUTH and SOUTHEAST sectors start to catch up with them in 2021, with new neighborhoods such as Seton, Rangeview, Hotchkiss, Yorkville, Belmont, Pine Creek, Wolf Willow, and Alpine Park.</p>
+</li>
+</ul>
+<p><strong>Findings from line plots visualization</strong></p>
+<ul>
+<li><p>Residential Improvement permit value increased during the COVID-19 outbreak in 2020 for all sectors except the CENTRE sector, where the permit value slightly decreased due to the high concentration of large-scale commercial residential buildings. The SOUTH sector dominates in the residential improvement permit value throughout and peaks in 2021 and 2022.</p>
+</li>
+<li><p>During the COVID-19 outbreak, 2020 saw a drop in single-family permit value in 4 sectors (NORTH, SOUTHEAST, CENTRE, and WEST) while slightly increasing in the other four sectors, which indicates there is still demand for single-family homes due to the need for social distancing during the COVID-19 outbreak. Commercial residential building permit value dropped in 2020 in 6 sectors, with a sharp drop in the CENTRE and NORTH sectors, while the other two sectors (SOUTHEAST and WEST) increased.</p>
+</li>
+<li><p>Both single-family and commercial residential building permit values increased in 2021 across all sectors, except for a slight drop in the commercial residential building permit value in the SOUTH sector. However, the SOUTH has a very high single-family permit value in 2021.</p>
+</li>
+<li><p>Single-family permit value drops in 2023 in all sectors. Commercial residential building permit values decreased in most sectors except increasing in the two smallest sectors, the WEST and the EAST sectors.</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>References<a rel="noopener" class="anchor-link" href="#References">&#182;</a></h1><ol>
+<li><p>The City of Calgary (2023). Building Permits.<a rel="noopener" href="https://data.calgary.ca/Business-and-Economic-Activity/Building-Permits/c2es-76ed">https://data.calgary.ca/Business-and-Economic-Activity/Building-Permits/c2es-76ed</a>.</p>
+</li>
+<li><p>The City of Calgary (2023). Community Crime and Disorder Statistics (2012-2019).<a rel="noopener" href="https://data.calgary.ca/Health-and-Safety/Community-Crime-and-Disorder-Statistics-2012-2019-/848s-4m4z">https://data.calgary.ca/Health-and-Safety/Community-Crime-and-Disorder-Statistics-2012-2019-/848s-4m4z</a>.</p>
+</li>
+<li><p>The City of Calgary Market Trend reports: Residential/Multi-residential. 2023 Property Assessment Residential Market Trends. <a rel="noopener" href="https://www.calgary.ca/property-owners/assessment/roll-highlights.html#:~:text=The%20typical%20market%20value%20assessment,compared%20to%20%24485%2C000%20in%202022">https://www.calgary.ca/property-owners/assessment/roll-highlights.html#:~:text=The%20typical%20market%20value%20assessment,compared%20to%20%24485%2C000%20in%202022</a>.</p>
+</li>
+<li><p>2022 Creb Community map. <a rel="noopener" href="https://www.creb.com/-/media/Public/CREBcom/Housing_Statistics/CITY_OF_CALGARY_MAP_2022.pdf">https://www.creb.com/-/media/Public/CREBcom/Housing_Statistics/CITY_OF_CALGARY_MAP_2022.pdf</a></p>
+</li>
+</ol>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[&#160;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<script type="module" src="https://s.brightspace.com/lib/bsi/20.23.9-217/unbundled/mathjax.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					if (document.querySelector('math') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+						document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+							elm.setAttribute('style', 'display: block; height: 0.5rem;');
+						});
+
+						window.D2L.MathJax.loadMathJax({
+							'outputScale': 1,
+							'renderLatex': false
+						});
+					}
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/20.23.9-217/unbundled/prism.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					document.querySelectorAll('.d2l-code').forEach(code => {
+						window.D2L.Prism.formatCodeElement(code);
+					});
+				});</script></body></html>

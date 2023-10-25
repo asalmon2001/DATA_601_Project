@@ -1,0 +1,1683 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    
+    
+    
+    
+
+
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Guiding Question: The Relationship Between Residential/Non-Residential Building Permit Values and Unemployment Rate<a rel="noopener" class="anchor-link" href="#Guiding-Question:-The-Relationship-Between-Residential/Non-Residential-Building-Permit-Values-and-Unemployment-Rate">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Domain<a rel="noopener" class="anchor-link" href="#Domain">&#182;</a></h1><p>This study aims to investigate Calgary’s building permits in order to observe the influence the building permit values have on unemployment rate. Shelter is one of the fundamental needs of humans to survive. From the earliest era when homes were built with basic resources like branches or stones, mankind has since advanced to a point in which it can construct solid and sturdy buildings literally anywhere and designate them as residences, offices, schools, factories, and hospitals.
+Based on the new report regarding the housing crisis in Calgary which was published by the City of Calgary on Sep,2023 approximately 20% of Calgary households are facing difficulties affording where they currently live, equating to 80,000 households allocating over 30% of their income toward housing costs. Calgary&#39;s reputation as one of the world&#39;s most livable cities is being jeopardized by a combination of factors, including a shortage of available rental properties, rent hikes that surpass typical increases, and the continuous escalation of housing prices.
+My domain will be investigating the relationship between building permit values and the unemployment rate. The construction industry is vast and serves as a valuable gauge of the private sector&#39;s health. A decrease in the issuance of building permits can serve as an early warning sign of an impending economic slowdown. Such a slowdown can initially be subtle, reminiscent of the housing crisis in 2006, but it has the potential to escalate into a major crisis, akin to the Great Recession. During a recession, unemployment rates rise rapidly and often take a considerable amount of time to return to lower levels. This can result in costly and enduring consequences for the overall economy.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Dataset<a rel="noopener" class="anchor-link" href="#Dataset">&#182;</a></h1><p>Our primary datasets are Monthly Economic Indicators and Building Permits, both found on Open Calgary [Monthly Economic Indicators | Open Calgary , Building Permits | Open Calgary]. Each dataset contains many features that help facilitate the investigation of Calgary’s housing crisis and economic trends and lead us to our guiding questions. For my guiding question, I have used Monthly Economic Indicators dataset. 
+The Monthly Economic Indicator dataset contains data about unemployment statistics, wages, building permit values, total housing, retail sales, and inflation rate from the 1970s to 2022. The columns related to unemployment include unemployment rates (Canada, Alberta, Calgary), Calgary total employment per 1000 persons, Calgary total employment change per 1000 persons (month-over-month and year-over-year), and Calgary average hourly wage. Columns related to building permit values are both, residential and non-residential building permit values, measured in dollars. Total housing is measured month-over-month and counts the number of residential housing projects started; there are two columns for total housing for projects within Calgary and projects in the Calgary Metropolitan Area (CMA). Finally, there are columns for retail sales (measured in billions of dollars) and 
+inflation rate.</p>
+<h2>Data Wrangling: The Process<a rel="noopener" class="anchor-link" href="#Data-Wrangling:-The-Process">&#182;</a></h2><p>In the data preparation phase, we streamlined the dataset by removing superfluous columns, adjusting column datatypes, and omitting rows with missing values. We focused our analysis on the period from 2000 to 2023, ensuring the exclusion of any anomalies such as blanks, zero, or negative values for building permits. It was essential to convert the date entries into a standardized datetime format. For clarity and ease of reference, column names were updated.</p>
+<p>For a more insightful analysis, we segmented the data yearly and summed up monthly building permit values to get the annual totals. Likewise, we computed the annual average from the monthly unemployment rates. Our visual representation employed line plots to elucidate data trends, with scatter plots superimposed to highlight the correlation between building permit values and unemployment rates.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Loading the dataset and the necessary libraries<a rel="noopener" class="anchor-link" href="#Loading-the-dataset-and-the-necessary-libraries">&#182;</a></h2><p>To conduct mathematical operations, we&#39;ll utilize the numpy library, while for data analysis, cleaning, exploration, and manipulation, the pandas library is indispensable. Handling time series data necessitates the datetime library. For visualization purposes, both matplotlib and plotly are essential tools in our toolkit. To start the process we need to read the dataset.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mlp</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">import</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="nn">mdates</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_colwidth&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Monthly_Economic_Indicators.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[2]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Date</th>
+      <th>Calgary (CER) Unemployment rate (%)</th>
+      <th>Alberta Unemployment Rate (%)</th>
+      <th>Canada Unemployment rate (%)</th>
+      <th>Calgary (CER) Total Employment (&#39;000 Persons)</th>
+      <th>Calgary (CER) Total Employment month-over-month change (&#39;000 Persons)</th>
+      <th>Calgary (CER) Total Employment year-over-year change (&#39;000 Persons)</th>
+      <th>Calgary (CMA) Average Hourly Wage Rate ($)</th>
+      <th>City of Calgary Building Permits Residential Value ($)</th>
+      <th>City of Calgary Building Permits Non-Residential Value ($)</th>
+      <th>Calgary (City) Total Housing Starts (units)</th>
+      <th>Calgary (CMA) Total Housing Starts (units)</th>
+      <th>Calgary (CER) Retail Sales ($billions)</th>
+      <th>Calgary (CMA) Inflation Rate (%change)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1972-01-01</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>322</td>
+      <td>NaN</td>
+      <td>3.90</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1972-02-01</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>527</td>
+      <td>NaN</td>
+      <td>3.86</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1972-03-01</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>590</td>
+      <td>NaN</td>
+      <td>3.38</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1972-04-01</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>580</td>
+      <td>NaN</td>
+      <td>3.86</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1972-05-01</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>915</td>
+      <td>NaN</td>
+      <td>4.35</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Removing Missing Data<a rel="noopener" class="anchor-link" href="#Removing-Missing-Data">&#182;</a></h2><p>Addressing missing values is a crucial step in data preprocessing to ensure the integrity and accuracy of subsequent analyses. Omitting these values, often termed as &quot;imputation,&quot; involves identifying and removing data points or rows that contain null or unavailable entries. This process aids in producing a more consistent dataset, reducing potential biases or inaccuracies. By excluding these gaps in the data, we enhance the robustness of our analytics and ensure that our results are based on complete and valid information.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Datetime Formatting<a rel="noopener" class="anchor-link" href="#Datetime-Formatting">&#182;</a></h2><p>In the provided code, a function named <code>dateobject</code> is defined to handle date formatting. The function takes a date string as an argument, presumed to be in the format &quot;YYYY-MM-DD&quot;. It then employs the <code>strptime</code> method from the <code>datetime</code> module to convert this string into a datetime object. Subsequently, the <code>isoformat</code> method standardizes the date object into an ISO 8601-compliant string format, which ensures consistency and compatibility across different systems and platforms. After defining the function, it&#39;s applied to the &#39;Date&#39; column of the dataframe <code>df</code> using the <code>map</code> method. This process effectively transforms and standardizes all date entries in that column. The final line displays the first four rows of the dataframe to provide a quick overview of the transformations applied.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">dateobject</span><span class="p">(</span><span class="n">date</span><span class="p">):</span>
+        <span class="n">dateobject</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">),</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">dateobject</span> <span class="o">=</span> <span class="n">dateobject</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">dateobject</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">dateobject</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Date</th>
+      <th>Calgary (CER) Unemployment rate (%)</th>
+      <th>Alberta Unemployment Rate (%)</th>
+      <th>Canada Unemployment rate (%)</th>
+      <th>Calgary (CER) Total Employment (&#39;000 Persons)</th>
+      <th>Calgary (CER) Total Employment month-over-month change (&#39;000 Persons)</th>
+      <th>Calgary (CER) Total Employment year-over-year change (&#39;000 Persons)</th>
+      <th>Calgary (CMA) Average Hourly Wage Rate ($)</th>
+      <th>City of Calgary Building Permits Residential Value ($)</th>
+      <th>City of Calgary Building Permits Non-Residential Value ($)</th>
+      <th>Calgary (City) Total Housing Starts (units)</th>
+      <th>Calgary (CMA) Total Housing Starts (units)</th>
+      <th>Calgary (CER) Retail Sales ($billions)</th>
+      <th>Calgary (CMA) Inflation Rate (%change)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>362</th>
+      <td>2002-03-01T00:00:00</td>
+      <td>5.1</td>
+      <td>5.3</td>
+      <td>8.5</td>
+      <td>605.1</td>
+      <td>-1.1</td>
+      <td>28.5</td>
+      <td>19.13</td>
+      <td>142476752.1</td>
+      <td>45105989.68</td>
+      <td>762.0</td>
+      <td>855</td>
+      <td>1.18</td>
+      <td>2.73</td>
+    </tr>
+    <tr>
+      <th>363</th>
+      <td>2002-04-01T00:00:00</td>
+      <td>5.5</td>
+      <td>5.5</td>
+      <td>8.3</td>
+      <td>607.4</td>
+      <td>2.3</td>
+      <td>26.7</td>
+      <td>19.36</td>
+      <td>178512153.3</td>
+      <td>63427877.76</td>
+      <td>1102.0</td>
+      <td>1207</td>
+      <td>1.23</td>
+      <td>4.29</td>
+    </tr>
+    <tr>
+      <th>364</th>
+      <td>2002-05-01T00:00:00</td>
+      <td>6.0</td>
+      <td>5.8</td>
+      <td>8.1</td>
+      <td>607.2</td>
+      <td>-0.2</td>
+      <td>19.3</td>
+      <td>19.47</td>
+      <td>141117954.7</td>
+      <td>94276137.00</td>
+      <td>1068.0</td>
+      <td>1292</td>
+      <td>1.25</td>
+      <td>1.01</td>
+    </tr>
+    <tr>
+      <th>365</th>
+      <td>2002-06-01T00:00:00</td>
+      <td>6.0</td>
+      <td>5.7</td>
+      <td>7.7</td>
+      <td>609.9</td>
+      <td>2.7</td>
+      <td>9.0</td>
+      <td>19.39</td>
+      <td>164043354.9</td>
+      <td>54290605.62</td>
+      <td>1351.0</td>
+      <td>1563</td>
+      <td>1.25</td>
+      <td>1.01</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Rename the columns<a rel="noopener" class="anchor-link" href="#Rename-the-columns">&#182;</a></h2><p>Renaming columns in a dataset is a common practice that enhances clarity and simplifies subsequent data processing tasks. By adopting intuitive and consistent column names, we streamline data manipulation and analysis, making the dataset more accessible to both the analyst and any potential collaborators. This standardization not only reduces the risk of errors but also ensures that the data structure is easily interpretable and aligns with the objectives of our analysis. In essence, column renaming is a step towards optimizing the dataset for efficient and accurate exploration.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">re_df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Calgary (CER) Unemployment rate (%)&quot;</span><span class="p">:</span><span class="s2">&quot;Unemployment_Rate&quot;</span><span class="p">,</span><span class="s2">&quot;City of Calgary Building Permits Residential Value ($)&quot;</span><span class="p">:</span> <span class="s2">&quot;Residential_Permit_Value&quot;</span><span class="p">,</span> <span class="s2">&quot;City of Calgary Building Permits Non-Residential Value ($)&quot;</span><span class="p">:</span> <span class="s2">&quot;NonResidential_Permit_Value&quot;</span><span class="p">,</span> <span class="s2">&quot;Calgary (CMA) Inflation Rate (</span><span class="si">%c</span><span class="s2">hange)&quot;</span><span class="p">:</span> <span class="s2">&quot;Inflation_Rate&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">re_df</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>Date</th>
+      <th>Unemployment_Rate</th>
+      <th>Alberta Unemployment Rate (%)</th>
+      <th>Canada Unemployment rate (%)</th>
+      <th>Calgary (CER) Total Employment (&#39;000 Persons)</th>
+      <th>Calgary (CER) Total Employment month-over-month change (&#39;000 Persons)</th>
+      <th>Calgary (CER) Total Employment year-over-year change (&#39;000 Persons)</th>
+      <th>Calgary (CMA) Average Hourly Wage Rate ($)</th>
+      <th>Residential_Permit_Value</th>
+      <th>NonResidential_Permit_Value</th>
+      <th>Calgary (City) Total Housing Starts (units)</th>
+      <th>Calgary (CMA) Total Housing Starts (units)</th>
+      <th>Calgary (CER) Retail Sales ($billions)</th>
+      <th>Inflation_Rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>362</td>
+      <td>2002-03-01T00:00:00</td>
+      <td>5.1</td>
+      <td>5.3</td>
+      <td>8.5</td>
+      <td>605.1</td>
+      <td>-1.1</td>
+      <td>28.5</td>
+      <td>19.13</td>
+      <td>142476752.1</td>
+      <td>4.510599e+07</td>
+      <td>762.0</td>
+      <td>855</td>
+      <td>1.18</td>
+      <td>2.73</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>363</td>
+      <td>2002-04-01T00:00:00</td>
+      <td>5.5</td>
+      <td>5.5</td>
+      <td>8.3</td>
+      <td>607.4</td>
+      <td>2.3</td>
+      <td>26.7</td>
+      <td>19.36</td>
+      <td>178512153.3</td>
+      <td>6.342788e+07</td>
+      <td>1102.0</td>
+      <td>1207</td>
+      <td>1.23</td>
+      <td>4.29</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>364</td>
+      <td>2002-05-01T00:00:00</td>
+      <td>6.0</td>
+      <td>5.8</td>
+      <td>8.1</td>
+      <td>607.2</td>
+      <td>-0.2</td>
+      <td>19.3</td>
+      <td>19.47</td>
+      <td>141117954.7</td>
+      <td>9.427614e+07</td>
+      <td>1068.0</td>
+      <td>1292</td>
+      <td>1.25</td>
+      <td>1.01</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>365</td>
+      <td>2002-06-01T00:00:00</td>
+      <td>6.0</td>
+      <td>5.7</td>
+      <td>7.7</td>
+      <td>609.9</td>
+      <td>2.7</td>
+      <td>9.0</td>
+      <td>19.39</td>
+      <td>164043354.9</td>
+      <td>5.429061e+07</td>
+      <td>1351.0</td>
+      <td>1563</td>
+      <td>1.25</td>
+      <td>1.01</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>366</td>
+      <td>2002-07-01T00:00:00</td>
+      <td>6.2</td>
+      <td>5.6</td>
+      <td>7.6</td>
+      <td>615.6</td>
+      <td>5.7</td>
+      <td>5.5</td>
+      <td>19.04</td>
+      <td>172549893.6</td>
+      <td>6.508729e+07</td>
+      <td>686.0</td>
+      <td>865</td>
+      <td>1.22</td>
+      <td>2.66</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>251</th>
+      <td>613</td>
+      <td>2023-02-01T00:00:00</td>
+      <td>6.7</td>
+      <td>6.0</td>
+      <td>5.1</td>
+      <td>914.3</td>
+      <td>-9.2</td>
+      <td>19.6</td>
+      <td>36.50</td>
+      <td>273759879.6</td>
+      <td>1.255071e+08</td>
+      <td>1032.0</td>
+      <td>1238</td>
+      <td>3.42</td>
+      <td>3.93</td>
+    </tr>
+    <tr>
+      <th>252</th>
+      <td>614</td>
+      <td>2023-03-01T00:00:00</td>
+      <td>7.0</td>
+      <td>6.3</td>
+      <td>5.4</td>
+      <td>916.3</td>
+      <td>2.0</td>
+      <td>20.9</td>
+      <td>36.20</td>
+      <td>342689734.2</td>
+      <td>1.402097e+08</td>
+      <td>937.0</td>
+      <td>1094</td>
+      <td>3.36</td>
+      <td>3.69</td>
+    </tr>
+    <tr>
+      <th>253</th>
+      <td>615</td>
+      <td>2023-04-01T00:00:00</td>
+      <td>6.4</td>
+      <td>6.3</td>
+      <td>5.3</td>
+      <td>931.9</td>
+      <td>15.6</td>
+      <td>24.3</td>
+      <td>36.30</td>
+      <td>405612618.2</td>
+      <td>1.097444e+08</td>
+      <td>904.0</td>
+      <td>1164</td>
+      <td>3.39</td>
+      <td>4.88</td>
+    </tr>
+    <tr>
+      <th>254</th>
+      <td>616</td>
+      <td>2023-05-01T00:00:00</td>
+      <td>6.0</td>
+      <td>6.0</td>
+      <td>5.3</td>
+      <td>946.9</td>
+      <td>15.0</td>
+      <td>28.1</td>
+      <td>36.10</td>
+      <td>474862801.6</td>
+      <td>1.099356e+08</td>
+      <td>1836.0</td>
+      <td>2076</td>
+      <td>3.47</td>
+      <td>3.49</td>
+    </tr>
+    <tr>
+      <th>255</th>
+      <td>617</td>
+      <td>2023-06-01T00:00:00</td>
+      <td>5.8</td>
+      <td>5.8</td>
+      <td>5.2</td>
+      <td>966.0</td>
+      <td>19.1</td>
+      <td>27.3</td>
+      <td>36.00</td>
+      <td>398253739.1</td>
+      <td>8.404043e+07</td>
+      <td>1025.0</td>
+      <td>1239</td>
+      <td>3.46</td>
+      <td>2.03</td>
+    </tr>
+  </tbody>
+</table>
+<p>256 rows &#215; 15 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Data Visualization<a rel="noopener" class="anchor-link" href="#Data-Visualization">&#182;</a></h1><p>In this phase, we narrowed down our dataset to only include entries after January 1, 2000, ensuring our analysis is based on the most recent and relevant data. For our visualizations, we utilized <code>matplotlib</code> to craft line plots. The graph represents the correlation between <strong>&#39;Residential Building Permit Values&#39; and &#39;Unemployment Rate&#39;</strong>.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">mask2019</span> <span class="o">=</span> <span class="n">re_df</span><span class="p">[(</span><span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="s1">&#39;2000-01-01&#39;</span><span class="p">)]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">mask2019</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax3</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Residential_Permit_Value&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower left&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">add_labels</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">rect</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">patches</span><span class="p">:</span>
+        <span class="n">y_value</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+        <span class="n">x_value</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">+</span> <span class="n">rect</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">/</span> <span class="mf">2.</span>
+
+        <span class="n">label</span> <span class="o">=</span><span class="s1">&#39;$</span><span class="si">{:,.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y_value</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>            
+            <span class="n">label</span><span class="p">,</span>                      
+            <span class="p">(</span><span class="n">x_value</span><span class="p">,</span> <span class="n">y_value</span><span class="p">),</span>        
+            <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">),</span>         
+            <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> 
+            <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>                
+            <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span><span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>  
+
+
+
+<span class="n">xtl</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">xtl</span><span class="o">=</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">get_text</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ax1</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()]</span>
+<span class="n">xtl</span><span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">xtl</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b %Y&quot;</span><span class="p">))</span>
+<span class="n">_</span><span class="o">=</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xtl</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>The following graph illustrates the correlation between <strong>&#39;Non-Residential Building Permit Values&#39; and &#39;Unemployment Rate&#39;</strong>.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">mask2019</span> <span class="o">=</span> <span class="n">re_df</span><span class="p">[(</span><span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="s1">&#39;2000-01-01&#39;</span><span class="p">)]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">mask2019</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax3</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;NonResidential_Permit_Value&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower left&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">)</span> 
+
+<span class="n">xtl</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">xtl</span><span class="o">=</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">get_text</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ax1</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()]</span>
+<span class="n">xtl</span><span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">xtl</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b %Y&quot;</span><span class="p">))</span>
+<span class="n">_</span><span class="o">=</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xtl</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Data Transformation<a rel="noopener" class="anchor-link" href="#Data-Transformation">&#182;</a></h2><p>The provided code focuses on refining the dataset for clearer visualization by transitioning from monthly to annual data aggregation. Initially, the &#39;Date&#39; column of the <code>re_df</code> dataframe is converted into a standard datetime format using the <code>pd.to_datetime</code> function. Subsequently, the data is grouped by year, and for each year, the sum of both &#39;Residential_Permit_Value&#39; and &#39;NonResidential_Permit_Value&#39; columns is computed. Additionally, the average &#39;Unemployment_Rate&#39; for each year is calculated. The resulting dataframe, <code>result</code>, is then restructured to have the &#39;Date&#39; (representing the year) as its index. This transformation simplifies the dataset, condensing monthly data points into annual summaries, which facilitates a more streamlined and interpretable visualization.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+
+<span class="c1"># Group &#39;Residential_Permit_Value&#39; and &#39;NonResidential_Permit_Value&#39; by year</span>
+<span class="c1">#result = re_df.groupby(re_df[&#39;Date&#39;].dt.year)[[&#39;Residential_Permit_Value&#39;, &#39;NonResidential_Permit_Value&#39;]].sum().reset_index()</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">re_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">:</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">:</span> <span class="s1">&#39;mean&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+<span class="n">result</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Residential_Permit_Value</th>
+      <th>NonResidential_Permit_Value</th>
+      <th>Unemployment_Rate</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2002</th>
+      <td>1.416430e+09</td>
+      <td>5.783561e+08</td>
+      <td>5.770000</td>
+    </tr>
+    <tr>
+      <th>2003</th>
+      <td>1.473616e+09</td>
+      <td>9.682054e+08</td>
+      <td>5.300000</td>
+    </tr>
+    <tr>
+      <th>2004</th>
+      <td>1.562705e+09</td>
+      <td>6.800189e+08</td>
+      <td>5.008333</td>
+    </tr>
+    <tr>
+      <th>2005</th>
+      <td>1.917170e+09</td>
+      <td>1.677694e+09</td>
+      <td>3.958333</td>
+    </tr>
+    <tr>
+      <th>2006</th>
+      <td>2.365588e+09</td>
+      <td>2.363098e+09</td>
+      <td>3.500000</td>
+    </tr>
+    <tr>
+      <th>2007</th>
+      <td>2.486575e+09</td>
+      <td>3.028465e+09</td>
+      <td>3.350000</td>
+    </tr>
+    <tr>
+      <th>2008</th>
+      <td>1.303698e+09</td>
+      <td>2.634092e+09</td>
+      <td>3.566667</td>
+    </tr>
+    <tr>
+      <th>2009</th>
+      <td>1.443781e+09</td>
+      <td>2.210801e+09</td>
+      <td>6.675000</td>
+    </tr>
+    <tr>
+      <th>2010</th>
+      <td>1.694339e+09</td>
+      <td>1.212141e+09</td>
+      <td>7.025000</td>
+    </tr>
+    <tr>
+      <th>2011</th>
+      <td>2.261495e+09</td>
+      <td>2.266423e+09</td>
+      <td>5.858333</td>
+    </tr>
+    <tr>
+      <th>2012</th>
+      <td>2.591924e+09</td>
+      <td>1.876343e+09</td>
+      <td>4.908333</td>
+    </tr>
+    <tr>
+      <th>2013</th>
+      <td>3.426868e+09</td>
+      <td>2.589756e+09</td>
+      <td>4.825000</td>
+    </tr>
+    <tr>
+      <th>2014</th>
+      <td>4.115176e+09</td>
+      <td>2.386226e+09</td>
+      <td>4.975000</td>
+    </tr>
+    <tr>
+      <th>2015</th>
+      <td>3.523656e+09</td>
+      <td>2.588540e+09</td>
+      <td>6.141667</td>
+    </tr>
+    <tr>
+      <th>2016</th>
+      <td>2.617952e+09</td>
+      <td>1.820430e+09</td>
+      <td>8.991667</td>
+    </tr>
+    <tr>
+      <th>2017</th>
+      <td>2.334612e+09</td>
+      <td>2.228055e+09</td>
+      <td>8.866667</td>
+    </tr>
+    <tr>
+      <th>2018</th>
+      <td>2.927245e+09</td>
+      <td>1.607757e+09</td>
+      <td>7.600000</td>
+    </tr>
+    <tr>
+      <th>2019</th>
+      <td>3.106165e+09</td>
+      <td>1.896591e+09</td>
+      <td>7.125000</td>
+    </tr>
+    <tr>
+      <th>2020</th>
+      <td>2.304967e+09</td>
+      <td>1.113666e+09</td>
+      <td>11.333333</td>
+    </tr>
+    <tr>
+      <th>2021</th>
+      <td>3.585657e+09</td>
+      <td>2.046980e+09</td>
+      <td>9.216667</td>
+    </tr>
+    <tr>
+      <th>2022</th>
+      <td>3.997441e+09</td>
+      <td>1.713027e+09</td>
+      <td>6.191667</td>
+    </tr>
+    <tr>
+      <th>2023</th>
+      <td>2.140412e+09</td>
+      <td>6.487510e+08</td>
+      <td>6.383333</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax3</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+
+<span class="n">result</span><span class="p">[</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;pink&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Residential_Permit_Value&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower left&#39;</span><span class="p">)</span>
+
+<span class="n">result</span><span class="p">[</span><span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">)</span>
+
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax3</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+
+<span class="n">result</span><span class="p">[</span><span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;NonResidential_Permit_Value&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower left&#39;</span><span class="p">)</span>
+
+<span class="n">result</span><span class="p">[</span><span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># xtl=[]</span>
+<span class="c1"># xtl=[item.get_text()[:10] for item in ax1.get_xticklabels()]</span>
+<span class="c1"># xtl= (pd.to_datetime(xtl).strftime(&quot;%b %Y&quot;))</span>
+<span class="c1"># _=ax1.set_xticklabels(xtl)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>In our visualization approach, we chose to display the annual data through a single plot divided into two side-by-side subplots. This layout not only conserves space but more importantly, allows for a direct comparison of trends. By placing the subplots adjacent to each other, viewers can easily discern patterns and relationships between the datasets without the need to switch between multiple charts, enhancing the overall clarity and interpretability of the visual representation.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># Create a single figure with two subplots side by side</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># First subplot</span>
+<span class="n">ax1_1</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+<span class="n">result</span><span class="p">[</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Residential_Permit_Value&quot;</span><span class="p">)</span>
+<span class="n">result</span><span class="p">[</span><span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1_1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">)</span>
+<span class="n">ax1_1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">)</span>
+<span class="n">ax1_1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+
+<span class="c1"># Second subplot</span>
+<span class="n">ax2_1</span> <span class="o">=</span> <span class="n">ax2</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+<span class="n">result</span><span class="p">[</span><span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;NonResidential_Permit_Value&quot;</span><span class="p">)</span>
+<span class="n">result</span><span class="p">[</span><span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2_1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">)</span>
+<span class="n">ax2_1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+
+<span class="n">ax2</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">)</span>
+<span class="n">ax2_1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Data Visualization Enhanced by Moving Averages<a rel="noopener" class="anchor-link" href="#Data-Visualization-Enhanced-by-Moving-Averages">&#182;</a></h2><p>To address the challenge of high variance and sporadic fluctuations in the actual data, we opted to utilize moving averages, a common technique in time series analysis. Moving averages help in smoothing out short-term variations and highlight longer-term trends or cycles, providing a clearer view of the data&#39;s underlying patterns. In the provided code, a 3-month (seasonal) rolling window is used to compute the moving average for both &#39;Residential_Permit_Value&#39; and &#39;NonResidential_Permit_Value&#39;. The results are stored in new columns: &#39;MA_Residential_Permit_Value&#39; and &#39;MA_NonResidential_Permit_Value&#39;. By incorporating these smoothed data points in our visualizations, we can offer a more refined and less noisy representation of the trends, facilitating better insights and interpretations.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#df.rolling(window=3)[&#39;Residential_Permit_Value&#39;].mean()</span>
+<span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;MA_Residential_Permit_Value&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">re_df</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;MA_Residential_Permit_Value&#39;</span><span class="p">]</span>
+<span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;MA_NonResidential_Permit_Value&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">re_df</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;MA_NonResidential_Permit_Value&#39;</span><span class="p">]</span>
+<span class="n">re_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult">
+<div>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>Date</th>
+      <th>Unemployment_Rate</th>
+      <th>Alberta Unemployment Rate (%)</th>
+      <th>Canada Unemployment rate (%)</th>
+      <th>Calgary (CER) Total Employment (&#39;000 Persons)</th>
+      <th>Calgary (CER) Total Employment month-over-month change (&#39;000 Persons)</th>
+      <th>Calgary (CER) Total Employment year-over-year change (&#39;000 Persons)</th>
+      <th>Calgary (CMA) Average Hourly Wage Rate ($)</th>
+      <th>Residential_Permit_Value</th>
+      <th>NonResidential_Permit_Value</th>
+      <th>Calgary (City) Total Housing Starts (units)</th>
+      <th>Calgary (CMA) Total Housing Starts (units)</th>
+      <th>Calgary (CER) Retail Sales ($billions)</th>
+      <th>Inflation_Rate</th>
+      <th>MA_Residential_Permit_Value</th>
+      <th>MA_NonResidential_Permit_Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>362</td>
+      <td>2002-03-01</td>
+      <td>5.1</td>
+      <td>5.3</td>
+      <td>8.5</td>
+      <td>605.1</td>
+      <td>-1.1</td>
+      <td>28.5</td>
+      <td>19.13</td>
+      <td>142476752.1</td>
+      <td>45105989.68</td>
+      <td>762.0</td>
+      <td>855</td>
+      <td>1.18</td>
+      <td>2.73</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>363</td>
+      <td>2002-04-01</td>
+      <td>5.5</td>
+      <td>5.5</td>
+      <td>8.3</td>
+      <td>607.4</td>
+      <td>2.3</td>
+      <td>26.7</td>
+      <td>19.36</td>
+      <td>178512153.3</td>
+      <td>63427877.76</td>
+      <td>1102.0</td>
+      <td>1207</td>
+      <td>1.23</td>
+      <td>4.29</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>364</td>
+      <td>2002-05-01</td>
+      <td>6.0</td>
+      <td>5.8</td>
+      <td>8.1</td>
+      <td>607.2</td>
+      <td>-0.2</td>
+      <td>19.3</td>
+      <td>19.47</td>
+      <td>141117954.7</td>
+      <td>94276137.00</td>
+      <td>1068.0</td>
+      <td>1292</td>
+      <td>1.25</td>
+      <td>1.01</td>
+      <td>1.540356e+08</td>
+      <td>6.760333e+07</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>365</td>
+      <td>2002-06-01</td>
+      <td>6.0</td>
+      <td>5.7</td>
+      <td>7.7</td>
+      <td>609.9</td>
+      <td>2.7</td>
+      <td>9.0</td>
+      <td>19.39</td>
+      <td>164043354.9</td>
+      <td>54290605.62</td>
+      <td>1351.0</td>
+      <td>1563</td>
+      <td>1.25</td>
+      <td>1.01</td>
+      <td>1.612245e+08</td>
+      <td>7.066487e+07</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>366</td>
+      <td>2002-07-01</td>
+      <td>6.2</td>
+      <td>5.6</td>
+      <td>7.6</td>
+      <td>615.6</td>
+      <td>5.7</td>
+      <td>5.5</td>
+      <td>19.04</td>
+      <td>172549893.6</td>
+      <td>65087287.66</td>
+      <td>686.0</td>
+      <td>865</td>
+      <td>1.22</td>
+      <td>2.66</td>
+      <td>1.592371e+08</td>
+      <td>7.121801e+07</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[13]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">mask2019</span> <span class="o">=</span> <span class="n">re_df</span><span class="p">[(</span><span class="n">re_df</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="s1">&#39;2000-01-01&#39;</span><span class="p">)]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">mask2019</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+<span class="n">ax3</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;MA_Residential_Permit_Value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;MA_Residential_Permit_Value&quot;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower left&#39;</span><span class="p">)</span>
+<span class="c1"># re_df[&#39;MA_Residential_Permit_Value&#39;].plot(kind=&#39;line&#39;, color=&#39;black&#39;, ax=ax1, label=&quot;MA_Residential_Permit_Value&quot;)</span>
+<span class="c1"># ax1.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=&#39;lower left&#39;)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Unemployment Rate&#39;</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;MA_Residential_Permit_Value&#39;</span><span class="p">)</span>
+<span class="c1">#ax2.set_ylabel = (&#39;MA_Residential_Permit_Value&#39;)</span>
+
+<span class="k">def</span> <span class="nf">add_labels</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">rect</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">patches</span><span class="p">:</span>
+        <span class="n">y_value</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+        <span class="n">x_value</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">+</span> <span class="n">rect</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">/</span> <span class="mf">2.</span>
+
+        <span class="n">label</span> <span class="o">=</span><span class="s1">&#39;$</span><span class="si">{:,.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y_value</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>            
+            <span class="n">label</span><span class="p">,</span>                      
+            <span class="p">(</span><span class="n">x_value</span><span class="p">,</span> <span class="n">y_value</span><span class="p">),</span>        
+            <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">),</span>         
+            <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> 
+            <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>                
+            <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span><span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>  
+
+
+
+<span class="c1"># xtl=[]</span>
+<span class="c1"># xtl=[item.get_text()[:10] for item in ax1.get_xticklabels()]</span>
+<span class="c1"># xtl= (pd.to_datetime(xtl).strftime(&quot;%b %Y&quot;))</span>
+<span class="c1"># _=ax1.set_xticklabels(xtl)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Scatter Plot Analysis for Correlation Between the Residential Building Permit Values and Unemployment Rate<a rel="noopener" class="anchor-link" href="#Scatter-Plot-Analysis-for-Correlation-Between-the-Residential-Building-Permit-Values-and-Unemployment-Rate">&#182;</a></h2><p>A scatter plot is an excellent tool for visualizing the relationship between two variables. By plotting each data point based on its coordinates in a two-dimensional space, we can quickly discern patterns or trends, if any, between the variables. In this context, we are particularly interested in understanding the correlation between &#39;Residential Building Permit Values&#39; and &#39;Unemployment Rate&#39;.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;NonResidential_Permit_Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;AxesSubplot: xlabel=&#39;NonResidential_Permit_Value&#39;, ylabel=&#39;Unemployment_Rate&#39;&gt;</pre>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Scatter Plot Analysis for Correlation Between the Non-residential Building Permit Values and Unemployment Rate<a rel="noopener" class="anchor-link" href="#Scatter-Plot-Analysis-for-Correlation-Between-the-Non-residential-Building-Permit-Values-and-Unemployment-Rate">&#182;</a></h2><p>A scatter plot is an excellent tool for visualizing the relationship between two variables. By plotting each data point based on its coordinates in a two-dimensional space, we can quickly discern patterns or trends, if any, between the variables. In this context, we are particularly interested in understanding the correlation between &#39;Residential Building Permit Values&#39; and &#39;Unemployment Rate&#39;.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+     <div class="CodeMirror cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;Residential_Permit_Value&#39;</span><span class="p">,</span> <span class="s1">&#39;Unemployment_Rate&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;AxesSubplot: xlabel=&#39;Residential_Permit_Value&#39;, ylabel=&#39;Unemployment_Rate&#39;&gt;</pre>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img src="javascript://"/>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Conclusion<a rel="noopener" class="anchor-link" href="#Conclusion">&#182;</a></h1><h3>Calgary Building Permit Values and Unemployment: A Glimpse<a rel="noopener" class="anchor-link" href="#Calgary-Building-Permit-Values-and-Unemployment:-A-Glimpse">&#182;</a></h3><p>Calgary&#39;s building permit values serve as a meaningful gauge to understand the city&#39;s economic health, and they&#39;re notably intertwined with unemployment trends. This relationship, although clear, is influenced by multifaceted factors including economic shifts, population growth, regulatory decisions, and overall consumer optimism.</p>
+<p>Our data visualization reveals a clear inverse correlation: as building permit values rise, unemployment tends to decrease. This pattern, however, manifests differently across sectors. A surge in commercial building permits is typically a positive economic indicator, suggesting businesses are thriving and job opportunities are expanding. In contrast, an increase in residential building permits, especially for single-family homes, signals a broader economic confidence among residents, as more individuals find themselves in a position to purchase homes.</p>
+<p>In essence, building permit values aren&#39;t just static numbers; they offer foresight. An upward trend suggests a vibrant economy with increased construction and business activities. Conversely, a decline could be an early sign of economic deceleration. By closely monitoring these metrics, we can anticipate the potential direction of Calgary&#39;s economic winds.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>References<a rel="noopener" class="anchor-link" href="#References">&#182;</a></h1><p>The City of Calgary (2023). Monthly Economic Indicators. <a rel="noopener" href="https://data.calgary.ca/Business-and-Economic-Activity/Monthly-Economic-Indicators/7cvb-8ame">https://data.calgary.ca/Business-and-Economic-Activity/Monthly-Economic-Indicators/7cvb-8ame</a>, [Retrieved September 18, 2023]</p>
+<p>The City of Calgary (2023). Housing Needs Assessment, 2023. <a rel="noopener" href="https://www.calgary.ca/social-services/low-income/housing-needs-assessment.html">https://www.calgary.ca/social-services/low-income/housing-needs-assessment.html</a> [Retrieved on September 22, 2023]</p>
+<p>Hynes, L. (2023). Canada’s Housing Boom Was A Bubble: Now Comes The Bust – OpEd . Eurasia Review <a rel="noopener" href="https://www.eurasiareview.com/30042023-canadas-housing-boom-was-a-bubble-now-comes-the-bust-">https://www.eurasiareview.com/30042023-canadas-housing-boom-was-a-bubble-now-comes-the-bust-</a>
+oped/</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+<script type="module" src="https://s.brightspace.com/lib/bsi/20.23.9-217/unbundled/mathjax.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					if (document.querySelector('math') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+						document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+							elm.setAttribute('style', 'display: block; height: 0.5rem;');
+						});
+
+						window.D2L.MathJax.loadMathJax({
+							'outputScale': 1,
+							'renderLatex': false
+						});
+					}
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/20.23.9-217/unbundled/prism.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					document.querySelectorAll('.d2l-code').forEach(code => {
+						window.D2L.Prism.formatCodeElement(code);
+					});
+				});</script></body></html>
